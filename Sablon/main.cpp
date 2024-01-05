@@ -89,6 +89,9 @@ int main(void)
         layout.AddFloat(2);
 
         va.AddBuffer(vb, layout);
+        va.Bind();
+        ib.Bind();
+        va.Unbind();
 
         unsigned int stride = (2) * sizeof(float);
 
@@ -103,7 +106,7 @@ int main(void)
             spotShader.Bind();
             spotShader.SetUniform4f("u_Color", red, 0.0f, 0.0f, 1.0f);
             va.Bind();
-            ib.Bind();
+           
             GLCall(glDrawElements(GL_TRIANGLE_STRIP, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
             spotShader.Unbind();
 
