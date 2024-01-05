@@ -21,9 +21,8 @@
 #include <string>
 #include "VertexArray.h"
 #include "IndexBuffer.h"
+#include "Shader.h"
 
-unsigned int compileShader(GLenum type, const char* source);
-unsigned int createShader(const char* vsSource, const char* fsSource);
 
 int main(void)
 {
@@ -59,18 +58,15 @@ int main(void)
         return 3;
     }
     //shaders and finding uniforms
-    unsigned int spotShader = createShader("basic.vert", "spot.frag");
+    Shader spotShader("basic.vert", "basic.frag");
+    spotShader.Bind();
+    spotShader.SetUniform4f("u_Color", 0.0f, 0.3f, 0.8f, 1.0f);
+    float red = 1.0f;
+    
 
-    glUseProgram(spotShader);
-    int uSpotMVP = glGetUniformLocation(spotShader, "mvp");
+    //glUseProgram(spotShader);
+    //int uSpotMVP = glGetUniformLocation(spotShader, "mvp");
 
-    /*float positions[] = {
-      -0.5f, -0.5f, // 0
-       0.5f, -0.5f, // 1
-       0.5f,  0.5f, // 2
-      -0.5f,  0.5f  // 3
-    };
-    */
     float vertices[] =
     {
          0.2f,  0.2f,
@@ -96,121 +92,31 @@ int main(void)
 
         unsigned int stride = (2) * sizeof(float);
 
-
-
-        //glClearColor(192.0 / 255, 192.0 / 255, 192.0 / 255, 1.0);
         glClearColor(255.0, 255.0, 255.0, 1.0);
         while (!glfwWindowShouldClose(window))
         {
-            double now = glfwGetTime();
-
             if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
                 glfwSetWindowShouldClose(window, GL_TRUE);
 
             GLCall(glClear(GL_COLOR_BUFFER_BIT));
-
-            glUseProgram(spotShader);
-            //glBindVertexArray(VAO);
+          
+            spotShader.Bind();
+            spotShader.SetUniform4f("u_Color", red, 0.0f, 0.0f, 1.0f);
             va.Bind();
             ib.Bind();
             GLCall(glDrawElements(GL_TRIANGLE_STRIP, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
+            spotShader.Unbind();
+
+            if (red < 0.3)
+                red += 0.1;
+            else
+                red -= 0.1;
 
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
 
-        //glDeleteBuffers(5, VBO);
-        //glDeleteVertexArrays(5, VAO);
-        glDeleteProgram(spotShader);
-
         glfwTerminate();
         return 0;
     }
-}
-
-glm::mat4 transform(float xOffset, float yOffset, float scale, bool rotate) {
-    glm::mat4 translateM = glm::translate(glm::mat4(1.0f), glm::vec3(xOffset, yOffset, 0.0f));
-    glm::mat4 scaleM = glm::scale(glm::mat4(1.0f),glm::vec3(scale, scale, 0.0f));
-    glm::mat4 rotateM = glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0.f, 0.f, 1.f));
-    glm::mat4 modelM = rotate ? translateM * rotateM * scaleM : translateM * scaleM;
-    return modelM;
-}
-
-unsigned int compileShader(GLenum type, const char* source)
-{
-    //Uzima kod u fajlu na putanji "source", kompajlira ga i vraca sejder tipa "type"
-    //Citanje izvornog koda iz fajla
-    std::string content = "";
-    std::ifstream file(source);
-    std::stringstream ss;
-    if (file.is_open())
-    {
-        ss << file.rdbuf();
-        file.close();
-        std::cout << "Uspjesno procitao fajl sa putanje \"" << source << "\"!" << std::endl;
-    }
-    else {
-        ss << "";
-        std::cout << "Greska pri citanju fajla sa putanje \"" << source << "\"!" << std::endl;
-    }
-    std::string temp = ss.str();
-    const char* sourceCode = temp.c_str(); //Izvorni kod sejdera koji citamo iz fajla na putanji "source"
-
-    int shader = glCreateShader(type); //Napravimo prazan sejder odredjenog tipa (vertex ili fragment)
-
-    int success; //Da li je kompajliranje bilo uspjesno (1 - da)
-    char infoLog[512]; //Poruka o gresci (Objasnjava sta je puklo unutar sejdera)
-    glShaderSource(shader, 1, &sourceCode, NULL); //Postavi izvorni kod sejdera
-    glCompileShader(shader); //Kompajliraj sejder
-
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success); //Provjeri da li je sejder uspjesno kompajliran
-    if (success == GL_FALSE)
-    {
-        glGetShaderInfoLog(shader, 512, NULL, infoLog); //Pribavi poruku o gresci
-        if (type == GL_VERTEX_SHADER)
-            printf("VERTEX");
-        else if (type == GL_FRAGMENT_SHADER)
-            printf("FRAGMENT");
-        printf(" sejder ima gresku! Greska: \n");
-        printf(infoLog);
-    }
-    return shader;
-}
-unsigned int createShader(const char* vsSource, const char* fsSource)
-{
-    //Pravi objedinjeni sejder program koji se sastoji od Vertex sejdera ciji je kod na putanji vsSource
-
-    unsigned int program; //Objedinjeni sejder
-    unsigned int vertexShader; //Verteks sejder (za prostorne podatke)
-    unsigned int fragmentShader; //Fragment sejder (za boje, teksture itd)
-
-    program = glCreateProgram(); //Napravi prazan objedinjeni sejder program
-
-    vertexShader = compileShader(GL_VERTEX_SHADER, vsSource); //Napravi i kompajliraj vertex sejder
-    fragmentShader = compileShader(GL_FRAGMENT_SHADER, fsSource); //Napravi i kompajliraj fragment sejder
-
-    //Zakaci verteks i fragment sejdere za objedinjeni program
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-
-    glLinkProgram(program); //Povezi ih u jedan objedinjeni sejder program
-    glValidateProgram(program); //Izvrsi provjeru novopecenog programa
-
-    int success;
-    char infoLog[512];
-    glGetProgramiv(program, GL_VALIDATE_STATUS, &success); //Slicno kao za sejdere
-    if (success == GL_FALSE)
-    {
-        glGetShaderInfoLog(program, 512, NULL, infoLog);
-        std::cout << "Objedinjeni sejder ima gresku! Greska: \n";
-        std::cout << infoLog << std::endl;
-    }
-
-    //Posto su kodovi sejdera u objedinjenom sejderu, oni pojedinacni programi nam ne trebaju, pa ih brisemo zarad ustede na memoriji
-    glDetachShader(program, vertexShader);
-    glDeleteShader(vertexShader);
-    glDetachShader(program, fragmentShader);
-    glDeleteShader(fragmentShader);
-
-    return program;
 }
