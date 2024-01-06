@@ -40,7 +40,7 @@ int main(void)
 
     GLFWwindow* window;
     unsigned int wWidth = 1200;
-    unsigned int wHeight = 800;
+    unsigned int wHeight = 1200;
     const char wTitle[] = "Parking";
     window = glfwCreateWindow(wWidth, wHeight, wTitle, NULL, NULL);
     if (window == NULL)
@@ -115,6 +115,18 @@ int main(void)
     };
     unsigned int stride = (3 + 3) * sizeof(float);
 
+    glm::mat4 model = glm::mat4(1.0f);
+    //model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+
+    spotShader.SetUniformMat4f("uM", model);
+
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    spotShader.SetUniformMat4f("uV", view);
+
+    glm::mat4 projectionP = glm::perspective(glm::radians(90.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
+    spotShader.SetUniformMat4f("uP", projectionP);
+
     //unsigned int indices[] = {
     //    0, 1, 2,
      //   2, 0, 4
@@ -139,8 +151,8 @@ int main(void)
         //unsigned int stride = (2) * sizeof(float);
         GLCall(glEnable(GL_DEPTH_TEST));
         //glDepthFunc(GL_LESS);
-       // GLCall(glEnable(GL_CULL_FACE));
-       // glCullFace(GL_BACK);
+        //GLCall(glEnable(GL_CULL_FACE));
+        //glCullFace(GL_BACK);
         GLCall(glClearColor(255.0, 255.0, 255.0, 1.0));
         while (!glfwWindowShouldClose(window))
         {
@@ -148,6 +160,14 @@ int main(void)
                 glfwSetWindowShouldClose(window, GL_TRUE);
 
             GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            {
+                spotShader.Bind();
+                model = glm::rotate(model, glm::radians(-0.5f), glm::vec3(0.0f, 1.0f, 0.0f));
+                spotShader.SetUniformMat4f("uM", model);
+                spotShader.Unbind();
+            }
           
             spotShader.Bind();
             spotShader.SetUniform4f("u_Color", red, 0.0f, 0.0f, 1.0f);
@@ -155,11 +175,6 @@ int main(void)
             GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
             //GLCall(glDrawElements(GL_TRIANGLE_STRIP, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
             spotShader.Unbind();
-
-            //if (red < 0.3)
-             //   red += 0.1;
-            //else
-            //    red -= 0.1;
 
             glfwSwapBuffers(window);
             glfwPollEvents();
