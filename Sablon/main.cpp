@@ -68,52 +68,98 @@ int main(void)
     //int uSpotMVP = glGetUniformLocation(spotShader, "mvp");
 
     float vertices[] =
-    {
-         0.2f,  0.2f,
-         0.5f,  0.2f,
-         0.35f, 0.6f,
-          0.6f, 0.6f
-    };
+    {   //Kocka
+        //Normale su potrebne za racun osvjetljenja.
+    //X     Y      Z       NX    NY     NZ
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-    unsigned int indices[] = {
-        0, 1, 2,
-        2, 0, 4
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
     };
+    unsigned int stride = (3 + 3) * sizeof(float);
+
+    //unsigned int indices[] = {
+    //    0, 1, 2,
+     //   2, 0, 4
+    //};
 
     {
         VertexArray va;
-        VertexBuffer vb(vertices, 4 * 2 * sizeof(float));
-        IndexBuffer ib(indices, 6);
+        VertexBuffer vb(vertices, 36 * stride);
+       // IndexBuffer ib(indices, 6);
 
         VertexBufferLayout layout;
-        layout.AddFloat(2);
+        // location 0
+        layout.AddFloat(3);
+        //location 1
+        layout.AddFloat(3);
 
         va.AddBuffer(vb, layout);
-        va.Bind();
-        ib.Bind();
-        va.Unbind();
+        //va.Bind();
+        //ib.Bind();
+        //va.Unbind();
 
-        unsigned int stride = (2) * sizeof(float);
-
-        glClearColor(255.0, 255.0, 255.0, 1.0);
+        //unsigned int stride = (2) * sizeof(float);
+        GLCall(glEnable(GL_DEPTH_TEST));
+        //glDepthFunc(GL_LESS);
+       // GLCall(glEnable(GL_CULL_FACE));
+       // glCullFace(GL_BACK);
+        GLCall(glClearColor(255.0, 255.0, 255.0, 1.0));
         while (!glfwWindowShouldClose(window))
         {
             if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
                 glfwSetWindowShouldClose(window, GL_TRUE);
 
-            GLCall(glClear(GL_COLOR_BUFFER_BIT));
+            GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
           
             spotShader.Bind();
             spotShader.SetUniform4f("u_Color", red, 0.0f, 0.0f, 1.0f);
             va.Bind();
-           
-            GLCall(glDrawElements(GL_TRIANGLE_STRIP, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
+            GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
+            //GLCall(glDrawElements(GL_TRIANGLE_STRIP, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
             spotShader.Unbind();
 
-            if (red < 0.3)
-                red += 0.1;
-            else
-                red -= 0.1;
+            //if (red < 0.3)
+             //   red += 0.1;
+            //else
+            //    red -= 0.1;
 
             glfwSwapBuffers(window);
             glfwPollEvents();
