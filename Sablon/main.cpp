@@ -22,6 +22,8 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
+#include "Room.h"
+#include "Renderer.h"
 
 
 int main(void)
@@ -64,95 +66,80 @@ int main(void)
     float red = 1.0f;
     
 
-    //glUseProgram(spotShader);
-    //int uSpotMVP = glGetUniformLocation(spotShader, "mvp");
-
-    float vertices[] =
-    {   //Kocka
-        //Normale su potrebne za racun osvjetljenja.
-    //X     Y      Z       NX    NY     NZ
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
-    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-
-    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-    };
-    unsigned int stride = (3 + 3) * sizeof(float);
-
-    glm::mat4 model = glm::mat4(1.0f);
-    //model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
-
-    spotShader.SetUniformMat4f("uM", model);
-
-    glm::mat4 view = glm::mat4(1.0f);
-    view = glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    spotShader.SetUniformMat4f("uV", view);
-
-    glm::mat4 projectionP = glm::perspective(glm::radians(90.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
-    spotShader.SetUniformMat4f("uP", projectionP);
-
-    //unsigned int indices[] = {
-    //    0, 1, 2,
-     //   2, 0, 4
-    //};
 
     {
-        VertexArray va;
-        VertexBuffer vb(vertices, 36 * stride);
-       // IndexBuffer ib(indices, 6);
+        Renderer renderer;
+
+        float vertices[] =
+        {   //Kocka
+            //Normale su potrebne za racun osvjetljenja.
+        //X     Y      Z       NX    NY     NZ
+        //-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        // 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        // 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+       //  0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        //-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+       // -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+        };
+        unsigned int stride = (3 + 3) * sizeof(float);
+
+        VertexBuffer vb(vertices, 30 * stride);
+        // IndexBuffer ib(indices, 6);
 
         VertexBufferLayout layout;
         // location 0
         layout.AddFloat(3);
         //location 1
         layout.AddFloat(3);
-
+        VertexArray va;
         va.AddBuffer(vb, layout);
-        //va.Bind();
-        //ib.Bind();
-        //va.Unbind();
 
-        //unsigned int stride = (2) * sizeof(float);
+        //unsigned int indices[] = {
+        //    0, 1, 2,
+         //   2, 0, 4
+        //};
+     
+        Room room(spotShader, wWidth, wHeight);
+
         GLCall(glEnable(GL_DEPTH_TEST));
         //glDepthFunc(GL_LESS);
-        //GLCall(glEnable(GL_CULL_FACE));
-        //glCullFace(GL_BACK);
+        GLCall(glEnable(GL_CULL_FACE));
+        glCullFace(GL_BACK);
         GLCall(glClearColor(255.0, 255.0, 255.0, 1.0));
         while (!glfwWindowShouldClose(window))
         {
@@ -163,18 +150,11 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
             {
-                spotShader.Bind();
-                model = glm::rotate(model, glm::radians(-0.5f), glm::vec3(0.0f, 1.0f, 0.0f));
-                spotShader.SetUniformMat4f("uM", model);
-                spotShader.Unbind();
+                room.setModel(glm::rotate(room.getModel(), glm::radians(-0.5f), glm::vec3(0.0f, 1.0f, 0.0f)));
             }
-          
-            spotShader.Bind();
+
             spotShader.SetUniform4f("u_Color", red, 0.0f, 0.0f, 1.0f);
-            va.Bind();
-            GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
-            //GLCall(glDrawElements(GL_TRIANGLE_STRIP, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
-            spotShader.Unbind();
+            renderer.Draw(va, 0, 30, spotShader);
 
             glfwSwapBuffers(window);
             glfwPollEvents();

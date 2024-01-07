@@ -1,5 +1,5 @@
 #include "IndexBuffer.h"
-#include "Renderer.h"
+#include "Debug.h"
 
 //element array buffer EBO
 IndexBuffer::IndexBuffer(const unsigned int* indices, unsigned int count)
