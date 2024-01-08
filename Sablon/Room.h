@@ -11,6 +11,7 @@ public:
 	using Renderable::getView;
 	using Renderable::setProjection;
 	using Renderable::getProjection;
+	using Renderable::SetMatrices;
 private:
 
 };

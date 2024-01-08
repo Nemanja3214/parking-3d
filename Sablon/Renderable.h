@@ -12,6 +12,8 @@ public:
 	Renderable(Shader& shader, glm::mat4& model, glm::mat4& view, glm::mat4& projection);
 	Renderable(Shader& shader);
 
+	void SetMatrices();
+
 	void setModel(glm::mat4 model);
 	glm::mat4 getModel();
 	void setView(glm::mat4 view);

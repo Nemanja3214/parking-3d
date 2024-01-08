@@ -16,6 +16,14 @@ Renderable::Renderable(Shader& shader)
 {
 }
 
+void Renderable::SetMatrices()
+{
+    shader.Bind();
+    shader.SetUniformMat4f("uM", model);
+    shader.SetUniformMat4f("uV", view);
+    shader.SetUniformMat4f("uP", projection);
+}
+
 //Renderable::~Renderable()
 //{
     

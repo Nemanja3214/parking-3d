@@ -24,6 +24,7 @@
 #include "Shader.h"
 #include "Room.h"
 #include "Renderer.h"
+#include "House.h"
 
 
 int main(void)
@@ -60,26 +61,23 @@ int main(void)
         return 3;
     }
     //shaders and finding uniforms
-    Shader spotShader("basic.vert", "basic.frag");
-    spotShader.Bind();
-    spotShader.SetUniform4f("u_Color", 0.0f, 0.3f, 0.8f, 1.0f);
-    float red = 1.0f;
-    
-
+    Shader roomShader("basic.vert", "basic.frag");
+    roomShader.Unbind();
+    Shader houseShader("basic.vert", "basic.frag");
 
     {
         Renderer renderer;
 
-        float vertices[] =
+        float cubeVertices[] =
         {   //Kocka
             //Normale su potrebne za racun osvjetljenja.
         //X     Y      Z       NX    NY     NZ
-        //-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        // 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        // 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-       //  0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        //-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-       // -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
         -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
          0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
@@ -118,28 +116,128 @@ int main(void)
         };
         unsigned int stride = (3 + 3) * sizeof(float);
 
-        VertexBuffer vb(vertices, 30 * stride);
-        // IndexBuffer ib(indices, 6);
 
-        VertexBufferLayout layout;
+        // ROOM
+        roomShader.Bind();
+        VertexArray roomVa;
+        VertexBuffer roomVb(cubeVertices, 36 * stride);
+
+        unsigned int indices[] = {
+         6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
+         IndexBuffer ib(indices, 30);
+
+        VertexBufferLayout roomLayout;
         // location 0
-        layout.AddFloat(3);
+        roomLayout.AddFloat(3);
         //location 1
-        layout.AddFloat(3);
-        VertexArray va;
-        va.AddBuffer(vb, layout);
+        roomLayout.AddFloat(3);
 
-        //unsigned int indices[] = {
-        //    0, 1, 2,
-         //   2, 0, 4
-        //};
-     
-        Room room(spotShader, wWidth, wHeight);
+        roomVa.AddBuffer(roomVb, roomLayout);
 
+        Room room(roomShader, wWidth, wHeight);
+        roomShader.Unbind();
+
+
+        // HOUSE
+
+
+
+        float cubeWithWindowVertices[] =
+        {   //Kocka
+            //Normale su potrebne za racun osvjetljenja.
+        //X     Y      Z       NX    NY     NZ
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.0f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.0f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.0f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+
+        -0.5f, 0.0f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f, 0.0f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, 0.0f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+
+        };
+
+        stride = (3 + 3) * sizeof(float);
+
+        houseShader.Bind();
+        VertexArray houseVa;
+        VertexBuffer houseVb(cubeWithWindowVertices, 42 * stride);
+         //IndexBuffer ib(indices, 6);
+
+        unsigned int withoutWindowIndices[] = {
+            0, 1, 2, 3, 4, 5,
+            6,7,8, 9, 10, 11,
+            12, 13, 14, 15, 16, 17,
+            18,19,20,21,22,23,
+            24,25,26,27,28,29,
+            30,31,32,33,34,35
+        };
+        IndexBuffer withoutWindowIndicesIb(withoutWindowIndices, 36);
+
+        unsigned int windowIndices[] = {
+            36, 37, 38, 39, 40,41
+        };
+        IndexBuffer windowIndicesIb(windowIndices, 6);
+
+        VertexBufferLayout houseLayout;
+        // location 0
+        houseLayout.AddFloat(3);
+        //location 1
+        houseLayout.AddFloat(3);
+
+        houseVa.AddBuffer(houseVb, houseLayout);
+
+
+        House house(houseShader, wWidth, wHeight);
+        houseShader.Unbind();
+
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
         GLCall(glEnable(GL_DEPTH_TEST));
         //glDepthFunc(GL_LESS);
-        GLCall(glEnable(GL_CULL_FACE));
-        glCullFace(GL_BACK);
+        //GLCall(glEnable(GL_CULL_FACE));
+       // glCullFace(GL_BACK);
         GLCall(glClearColor(255.0, 255.0, 255.0, 1.0));
         while (!glfwWindowShouldClose(window))
         {
@@ -151,10 +249,24 @@ int main(void)
             if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
             {
                 room.setModel(glm::rotate(room.getModel(), glm::radians(-0.5f), glm::vec3(0.0f, 1.0f, 0.0f)));
+                house.setModel(glm::rotate(house.getModel(), glm::radians(-0.5f), glm::vec3(0.0f, 1.0f, 0.0f)));
             }
 
-            spotShader.SetUniform4f("u_Color", red, 0.0f, 0.0f, 1.0f);
-            renderer.Draw(va, 0, 30, spotShader);
+            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            {
+                room.setModel(glm::rotate(room.getModel(), glm::radians(0.5f), glm::vec3(0.0f, 1.0f, 0.0f)));
+                house.setModel(glm::rotate(house.getModel(), glm::radians(0.5f), glm::vec3(0.0f, 1.0f, 0.0f)));
+            }
+            roomShader.SetUniform4f("u_Color", 105.0f / 255, 105.0f / 255, 105.0f / 255, 1.0f);
+            renderer.Draw(roomVa, ib, roomShader);
+
+            house.SetMatrices();
+            houseShader.SetUniform4f("u_Color", 0.0f, 0.0f, 1.0f, 1.0f);
+            renderer.Draw(houseVa, withoutWindowIndicesIb, houseShader);
+
+            house.SetMatrices();
+            houseShader.SetUniform4f("u_Color", 167.0f/255, 199.0f/255, 203.0f/255, 0.5f);
+            renderer.Draw(houseVa, windowIndicesIb, houseShader);
 
             glfwSwapBuffers(window);
             glfwPollEvents();

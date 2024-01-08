@@ -3,7 +3,7 @@
 
 class House : Renderable {
 public:
-	House(Shader& shader);
+	House(Shader& shader, unsigned int wWidth, unsigned int wHeight);
 
 	using Renderable::setModel;
 	using Renderable::getModel;
@@ -11,5 +11,6 @@ public:
 	using Renderable::getView;
 	using Renderable::setProjection;
 	using Renderable::getProjection;
+	using Renderable::SetMatrices;
 private:
 };
