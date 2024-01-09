@@ -72,7 +72,7 @@ int main(void)
 
         glm::mat4 view = glm::mat4(1.0f);
         view = glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        glm::mat4 projection = glm::perspective(glm::radians(90.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
         float cubeVertices[] =
         {   //Kocka
             //Normale su potrebne za racun osvjetljenja.
@@ -377,8 +377,21 @@ int main(void)
         glEnable(GL_LINE_SMOOTH);
         glLineWidth(5.0);
         GLCall(glClearColor(255.0, 255.0, 255.0, 1.0));
+
+        const double targetFPS = 120.0;
+        double lastTime = 0.0;
         while (!glfwWindowShouldClose(window))
         {
+            double currentTime = glfwGetTime();
+            double deltaTime = currentTime - lastTime;
+
+            double targetFrameTime = 1.0 / targetFPS;
+
+            if (deltaTime < targetFrameTime) {
+                double sleepTime = targetFrameTime - deltaTime;
+                std::this_thread::sleep_for(std::chrono::duration<double>(sleepTime));
+            }
+
             if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
                 glfwSetWindowShouldClose(window, GL_TRUE);
 
@@ -422,10 +435,10 @@ int main(void)
 
           
             if (rampEnabled) {
-                if (ramp.rampAngle >= 60.0f)
-                    increment = -0.1f;
+                if (ramp.rampAngle >= 80.0f)
+                    increment = -(80.0f / targetFPS);
                 else if (ramp.rampAngle <= 0.0f) {
-                    increment = 0.1f;
+                    increment = 80.0f / targetFPS;
                     rampEnabled = false;
                 }
                     
@@ -439,6 +452,7 @@ int main(void)
             renderer.Draw(rampVa, moveableRampIndicesIb, rampShader);
             ramp.setModel(unmovebleModel);
 
+            lastTime = glfwGetTime();
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
