@@ -1,5 +1,6 @@
 #pragma once
 #include "Renderable.h"
+#include "Room.h"
 
 class House : public Renderable {
 public:
@@ -13,5 +14,8 @@ public:
 	using Renderable::getProjection;
 	using Renderable::SetMatrices;
 	using Renderable::rotateAroundCenter;
+
+	Camera getHouseCamera();
 private:
+	Camera houseCamera;
 };

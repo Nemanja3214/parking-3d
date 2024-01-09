@@ -408,6 +408,42 @@ int main(void)
                 view = glm::rotate(view, glm::radians(0.5f), glm::vec3(0.0f, 1.0f, 0.0f));
             }
 
+            if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+            {
+                // position inside house, look down, up is in direction of window
+                Camera camera = house.getHouseCamera();
+                view = glm::lookAt(camera.position, camera.look, camera.up);
+
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+            {
+                // position inside house, look down, up is in direction of window
+                Camera camera = room.getCornerCameras()[0];
+                view = glm::lookAt(camera.position, camera.look, camera.up);
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+            {
+                // position inside house, look down, up is in direction of window
+                Camera camera = room.getCornerCameras()[1];
+                view = glm::lookAt(camera.position, camera.look, camera.up);
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+            {
+                // position inside house, look down, up is in direction of window
+                Camera camera = room.getCornerCameras()[2];
+                view = glm::lookAt(camera.position, camera.look, camera.up);
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
+            {
+                // position inside house, look down, up is in direction of window
+                Camera camera = room.getCornerCameras()[3];
+                view = glm::lookAt(camera.position, camera.look, camera.up);
+            }
+
 
             if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
             {
