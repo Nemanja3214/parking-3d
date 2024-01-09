@@ -393,6 +393,8 @@ int main(void)
         // WIREFRAME MODE
        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+        bool isPolygon = false;
+
         // THICKER LINE
         glEnable(GL_LINE_SMOOTH);
         glLineWidth(5.0);
@@ -420,6 +422,15 @@ int main(void)
             if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
             {
                 view = glm::rotate(view, glm::radians(-0.5f), glm::vec3(0.0f, 1.0f, 0.0f));
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+            {
+                isPolygon = !isPolygon;
+                if(isPolygon)
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                else
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             }
 
             if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
