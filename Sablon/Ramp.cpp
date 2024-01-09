@@ -1,7 +1,7 @@
 #include "Ramp.h"
 #include <glm/gtx/transform.hpp>
 
-Ramp::Ramp(Shader& shader, unsigned int wWidth, unsigned int wHeight, glm::mat4 view, glm::mat4 projection)
+Ramp::Ramp(Shader& shader, glm::mat4 view, glm::mat4 projection)
     : Renderable(shader)
 {
 

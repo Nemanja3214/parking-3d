@@ -4,7 +4,7 @@
 
 
 
-House::House(Shader& shader, unsigned int wWidth, unsigned int wHeight, glm::mat4 view, glm::mat4 projection)
+House::House(Shader& shader, glm::mat4 view, glm::mat4 projection)
     : Renderable(shader)
 {
 

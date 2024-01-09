@@ -3,7 +3,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 
 
-Room::Room(Shader& shader, unsigned int wWidth, unsigned int wHeight, glm::mat4 view, glm::mat4 projection)
+Room::Room(Shader& shader, glm::mat4 view, glm::mat4 projection)
     : Renderable(shader)
 {
 

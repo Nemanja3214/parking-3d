@@ -140,7 +140,7 @@ int main(void)
 
         roomVa.AddBuffer(roomVb, roomLayout);
 
-        Room room(roomShader, wWidth, wHeight, view, projection);
+        Room room(roomShader, view, projection);
         roomShader.Unbind();
 
 
@@ -247,7 +247,7 @@ int main(void)
         houseVa.AddBuffer(houseVb, houseLayout);
 
 
-        House house(houseShader, wWidth, wHeight, view, projection);
+        House house(houseShader, view, projection);
         houseShader.Unbind();
 
         // Ramp
@@ -365,14 +365,14 @@ int main(void)
 
         rampVa.AddBuffer(rampVb, rampLayout);
 
-        Ramp ramp(rampShader, wWidth, wHeight, view, projection);
+        Ramp ramp(rampShader, view, projection);
         ramp.rampAngle = 0.0f;
         float increment = 0.1f;
         bool rampEnabled = false;
         rampShader.Unbind();
 
         Model manModel("Models/man/FabConvert.com_uploads_files_1939375_casual_male.obj");
-        Man man(manShader, wWidth, wHeight, view, projection);
+        Man man(manShader, view, projection);
 
         Renderable scene[] = { room, house, ramp, man};
         

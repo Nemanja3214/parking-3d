@@ -3,7 +3,7 @@
 
 class Ramp : public Renderable {
 public:
-	Ramp(Shader& shader, unsigned int wWidth, unsigned int wHeight, glm::mat4 view, glm::mat4 projection);
+	Ramp(Shader& shader, glm::mat4 view, glm::mat4 projection);
 
 	using Renderable::setModel;
 	using Renderable::getModel;

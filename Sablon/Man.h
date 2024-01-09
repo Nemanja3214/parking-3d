@@ -3,7 +3,7 @@
 
 class Man : public Renderable {
 public:
-	Man(Shader& shader, unsigned int wWidth, unsigned int wHeight, glm::mat4 view, glm::mat4 projection);
+	Man(Shader& shader, glm::mat4 view, glm::mat4 projection);
 
 	using Renderable::setModel;
 	using Renderable::getModel;

@@ -1,6 +1,6 @@
 #include "Man.h"
 
-Man::Man(Shader& shader, unsigned int wWidth, unsigned int wHeight, glm::mat4 view, glm::mat4 projection)
+Man::Man(Shader& shader, glm::mat4 view, glm::mat4 projection)
     : Renderable(shader)
 {
 

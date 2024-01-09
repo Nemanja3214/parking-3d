@@ -11,7 +11,7 @@ struct Camera {
 
 class Room : public Renderable {
 public:
-	Room(Shader& shader, unsigned int wWidth, unsigned int wHeight, glm::mat4 view, glm::mat4 projection);
+	Room(Shader& shader, glm::mat4 view, glm::mat4 projection);
 
 	using Renderable::setModel;
 	using Renderable::getModel;
