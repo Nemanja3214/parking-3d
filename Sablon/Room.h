@@ -22,6 +22,11 @@ public:
 	using Renderable::SetMatrices;
 	using Renderable::rotateAroundCenter;
 	std::vector<Camera> getCornerCameras();
+	bool isCeiling();
+	void setCeiling(bool ceiling);
+	Camera getBirdCamera();
 private:
 	std::vector<Camera> cornerCameras;
+	Camera birdCamera;
+	bool ceiling;
 };

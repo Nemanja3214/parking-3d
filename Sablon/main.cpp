@@ -132,6 +132,10 @@ int main(void)
         0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
          IndexBuffer ib(indices, 30);
 
+         unsigned int noCeilingIndices[] = {
+       0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 };
+         IndexBuffer noCeilingIb(noCeilingIndices, 30);
+
         VertexBufferLayout roomLayout;
         // location 0
         roomLayout.AddFloat(3);
@@ -425,32 +429,46 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
             {
+                room.setCeiling(true);
                 // position inside house, look down, up is in direction of window
                 Camera camera = house.getHouseCamera();
                 view = glm::lookAt(camera.position, camera.look, camera.up);
 
             }
 
+            if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+            {
+                // position inside house, look down, up is in direction of window
+                Camera camera = room.getBirdCamera();
+                room.setCeiling(false);
+                view = glm::lookAt(camera.position, camera.look, camera.up);
+
+            }
+
             if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
             {
+                room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[0];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
 
             if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
             {
+                room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[1];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
 
             if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
             {
+                room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[2];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
 
             if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
             {
+                room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[3];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
@@ -468,8 +486,10 @@ int main(void)
           
             roomShader.Bind();
             roomShader.SetUniform4f("u_Color", 105.0f / 255, 105.0f / 255, 105.0f / 255, 1.0f);
-            renderer.Draw(roomVa, ib, roomShader);
-
+            if(room.isCeiling())
+                renderer.Draw(roomVa, ib, roomShader);
+            else
+                renderer.Draw(roomVa, noCeilingIb, roomShader);
             houseShader.SetUniform4f("u_Color", 0.0f, 0.0f, 1.0f, 1.0f);
             renderer.Draw(houseVa, withoutWindowIndicesIb, houseShader);
 

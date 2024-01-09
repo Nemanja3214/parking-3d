@@ -4,9 +4,8 @@
 
 
 Room::Room(Shader& shader, glm::mat4 view, glm::mat4 projection)
-    : Renderable(shader)
+    :ceiling(true), Renderable(shader)
 {
-
     this->model = glm::mat4(1.0f);
     model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
 
@@ -47,6 +46,8 @@ Room::Room(Shader& shader, glm::mat4 view, glm::mat4 projection)
     for (int i = 0; i < 4; ++i) {
         this->cornerCameras.push_back({ camerasPositions[i], camerasLooks[i], camerasUps[i] });
     }
+
+   birdCamera = { glm::vec3(model * glm::vec4(0.0f, 1.5f, 0.0f, 1.0f)), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f) };
 }
 
 std::vector<Camera> Room::getCornerCameras()
@@ -54,4 +55,22 @@ std::vector<Camera> Room::getCornerCameras()
 
     return this->cornerCameras;
 }
+
+
+bool Room::isCeiling()
+{
+    return ceiling;
+}
+
+
+void Room::setCeiling(bool ceiling)
+{
+    this->ceiling = ceiling;
+}
+
+Camera Room::getBirdCamera()
+{
+    return birdCamera;
+}
+
 
