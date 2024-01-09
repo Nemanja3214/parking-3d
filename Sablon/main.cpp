@@ -427,8 +427,19 @@ int main(void)
                 view = glm::rotate(view, glm::radians(0.5f), glm::vec3(0.0f, 1.0f, 0.0f));
             }
 
+            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            {
+                view = glm::rotate(view, glm::radians(-0.5f), glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            {
+                view = glm::rotate(view, glm::radians(0.5f), glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+
             if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
             {
+                projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
                 room.setCeiling(true);
                 // position inside house, look down, up is in direction of window
                 Camera camera = house.getHouseCamera();
@@ -438,6 +449,8 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
             {
+                projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 10.0f);
+                //projection = glm::perspective(glm::radians(90.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
                 // position inside house, look down, up is in direction of window
                 Camera camera = room.getBirdCamera();
                 room.setCeiling(false);
@@ -447,6 +460,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
             {
+                projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[0];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
@@ -454,6 +468,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
             {
+                projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[1];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
@@ -461,6 +476,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
             {
+                projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[2];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
@@ -468,6 +484,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
             {
+                projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[3];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
@@ -480,6 +497,7 @@ int main(void)
             }
             for (int i = 0; i < 4; ++i) {
                 scene[i].setView(view);
+                scene[i].setProjection(projection);
             }
 
             
