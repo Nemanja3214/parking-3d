@@ -2,6 +2,7 @@
 #include "Shader.h"
 //#include "Renderer.h"
 #include "VertexArray.h"
+#include <glm/gtx/transform.hpp>
 class Renderable {
 protected:
 	Shader shader;
@@ -13,6 +14,7 @@ public:
 	Renderable(Shader& shader);
 
 	void SetMatrices();
+	void rotateAroundCenter(glm::vec3 center, float angle);
 
 	void setModel(glm::mat4 model);
 	glm::mat4 getModel();

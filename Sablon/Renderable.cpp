@@ -2,6 +2,7 @@
 #include "VertexArray.h"
 
 
+
 Renderable::Renderable(Shader& shader, glm::mat4& model, glm::mat4& view, glm::mat4& projection)
     : shader(shader), model(model), view(view), projection(projection)
 {
@@ -29,12 +30,20 @@ void Renderable::SetMatrices()
     
 //}
 
+void Renderable::rotateAroundCenter(glm::vec3 center, float angle) {
+    model = glm::translate(model, center);
+    model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
+    shader.Bind();
+    shader.SetUniformMat4f("uM", model);
+    //shader.Unbind();
+}
+
 
 void Renderable::setModel(glm::mat4 modelV) {
     model = modelV;
     shader.Bind();
     shader.SetUniformMat4f("uM", model);
-    //shader.Unbind();
+    shader.Unbind();
 }
 // Getter
 glm::mat4 Renderable::getModel() {
@@ -45,7 +54,7 @@ void Renderable::setView(glm::mat4 viewV) {
     view = viewV;
     shader.Bind();
     shader.SetUniformMat4f("uV", view);
-    //shader.Unbind();
+    shader.Unbind();
 }
 // Getter
 glm::mat4 Renderable::getView() {
@@ -56,7 +65,7 @@ void Renderable::setProjection(glm::mat4 projectionV) {
     projection = projectionV;
     shader.Bind();
     shader.SetUniformMat4f("uP", projection);
-    //shader.Unbind();
+    shader.Unbind();
 }
 // Getter
 glm::mat4 Renderable::getProjection() {
