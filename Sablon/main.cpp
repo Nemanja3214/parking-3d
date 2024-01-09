@@ -165,28 +165,28 @@ int main(void)
         -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
         -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, // left of window
         -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
         -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
         -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
         -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
         -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, // right of window
          0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
          0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
          0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
          0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
          0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, // bottom
          0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
          0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
          0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
         -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
         -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, // top
          0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
          0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
@@ -200,14 +200,21 @@ int main(void)
         -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
         -0.5f, 0.0f, -0.5f,  0.0f,  0.0f, -1.0f,
 
+        // monitor
 
+        -0.45f,  0.45f,  0.45f, -1.0f,  0.0f,  0.0f,
+        -0.45f,  0.45f, -0.45f, -1.0f,  0.0f,  0.0f,
+        -0.45f, -0.45f, -0.45f, -1.0f,  0.0f,  0.0f,
+        -0.45f, -0.45f, -0.45f, -1.0f,  0.0f,  0.0f,
+        -0.45f, -0.45f,  0.45f, -1.0f,  0.0f,  0.0f,
+        -0.45f,  0.45f,  0.45f, -1.0f,  0.0f,  0.0f,
         };
 
         stride = (3 + 3) * sizeof(float);
 
         houseShader.Bind();
         VertexArray houseVa;
-        VertexBuffer houseVb(cubeWithWindowVertices, 42 * stride);
+        VertexBuffer houseVb(cubeWithWindowVertices, 48 * stride);
          //IndexBuffer ib(indices, 6);
 
         unsigned int withoutWindowIndices[] = {
@@ -224,6 +231,11 @@ int main(void)
             36, 37, 38, 39, 40,41
         };
         IndexBuffer windowIndicesIb(windowIndices, 6);
+
+        unsigned int monitorIndices[] = {
+           42, 43, 44, 45, 46, 47
+        };
+        IndexBuffer monitorIndicesIb(monitorIndices, 6);
 
         VertexBufferLayout houseLayout;
         // location 0
@@ -371,7 +383,7 @@ int main(void)
         //GLCall(glEnable(GL_CULL_FACE));
        // glCullFace(GL_BACK);
         // WIREFRAME MODE
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+       //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         // THICKER LINE
         glEnable(GL_LINE_SMOOTH);
@@ -463,6 +475,12 @@ int main(void)
 
             houseShader.SetUniform4f("u_Color", 167.0f/255, 199.0f/255, 203.0f/255, 0.5f);
             renderer.Draw(houseVa, windowIndicesIb, houseShader);
+
+            houseShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
+            glm::mat4 tmp = house.getModel();
+            house.setModel(glm::scale(house.getModel(), glm::vec3(1.0f, 0.5f, 1.0f)));
+            renderer.Draw(houseVa, monitorIndicesIb, houseShader);
+            house.setModel(tmp);
 
         
             rampShader.SetUniform4f("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
