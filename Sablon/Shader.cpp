@@ -29,6 +29,11 @@ void Shader::Unbind() const
     GLCall(glUseProgram(0));
 }
 
+unsigned int Shader::getId()
+{
+    return this->m_RendererID;
+}
+
 int Shader::GetUniformLocation(const std::string& name)
 {
     if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
@@ -47,6 +52,12 @@ void Shader::SetUniform1i(const std::string& name, int value)
 {
     Bind();
     GLCall(glUniform1i(GetUniformLocation(name), value));
+}
+
+void Shader::SetUniform3f(const std::string& name, const glm::vec3& vec)
+{
+    Bind();
+    GLCall(glUniform3f(GetUniformLocation(name), vec[0], vec[1], vec[2]));
 }
 
 void Shader::SetUniform1f(const std::string& name, float value)

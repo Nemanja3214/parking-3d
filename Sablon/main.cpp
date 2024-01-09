@@ -17,7 +17,6 @@
 #include <thread>
 #include <chrono>
 
-#include "stb_image.h"
 #include <string>
 #include "VertexArray.h"
 #include "IndexBuffer.h"
@@ -26,6 +25,8 @@
 #include "Renderer.h"
 #include "House.h"
 #include "Ramp.h"
+#include "model.hpp"
+#include "Man.h"
 
 
 int main(void)
@@ -63,9 +64,9 @@ int main(void)
     }
     //shaders and finding uniforms
     Shader roomShader("basic.vert", "basic.frag");
-    roomShader.Unbind();
     Shader houseShader("basic.vert", "basic.frag");
     Shader rampShader("basic.vert", "basic.frag");
+    Shader manShader("model.vert", "model.frag");
 
     {
         Renderer renderer;
@@ -370,7 +371,10 @@ int main(void)
         bool rampEnabled = false;
         rampShader.Unbind();
 
-        Renderable scene[] = { room, house, ramp };
+        Model manModel("Models/man/FabConvert.com_uploads_files_1939375_casual_male.obj");
+        Man man(manShader, wWidth, wHeight, view, projection);
+
+        Renderable scene[] = { room, house, ramp, man};
         
 
         //ALPHA
@@ -408,7 +412,6 @@ int main(void)
                 glfwSetWindowShouldClose(window, GL_TRUE);
 
             GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-            //view = glm::rotate(view, glm::radians(0.05f), glm::vec3(0.0f, 1.0f, 0.0f));
            
             if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
             {
@@ -430,28 +433,24 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
             {
-                // position inside house, look down, up is in direction of window
                 Camera camera = room.getCornerCameras()[0];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
 
             if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
             {
-                // position inside house, look down, up is in direction of window
                 Camera camera = room.getCornerCameras()[1];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
 
             if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
             {
-                // position inside house, look down, up is in direction of window
                 Camera camera = room.getCornerCameras()[2];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
 
             if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
             {
-                // position inside house, look down, up is in direction of window
                 Camera camera = room.getCornerCameras()[3];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
@@ -461,12 +460,13 @@ int main(void)
             {
                 rampEnabled = true;
             }
-            for (int i = 0; i < 3; ++i) {
+            for (int i = 0; i < 4; ++i) {
                 scene[i].setView(view);
             }
 
             
           
+            roomShader.Bind();
             roomShader.SetUniform4f("u_Color", 105.0f / 255, 105.0f / 255, 105.0f / 255, 1.0f);
             renderer.Draw(roomVa, ib, roomShader);
 
@@ -505,6 +505,8 @@ int main(void)
             rampShader.SetUniform4f("u_Color", 1.0f, 1.0f, 0.0f, 1.0f);
             renderer.Draw(rampVa, moveableRampIndicesIb, rampShader);
             ramp.setModel(unmovebleModel);
+
+            manModel.Draw(manShader);
 
             lastTime = glfwGetTime();
             glfwSwapBuffers(window);
