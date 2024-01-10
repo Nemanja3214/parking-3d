@@ -78,7 +78,7 @@ int main(void)
         return 3;
     }
     //shaders and finding uniforms
-    Shader roomShader("basic.vert", "basic.frag");
+    Shader roomShader("texture.vert", "texture.frag");
     Shader houseShader("basic.vert", "basic.frag");
     Shader rampShader("basic.vert", "basic.frag");
     Shader manShader("model.vert", "model.frag");
@@ -93,53 +93,93 @@ int main(void)
         glm::mat4 perspective = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
         glm::mat4 projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
         glm::mat4 ortho = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 10.0f);
+
+        GLCall(glEnable(GL_TEXTURE_2D));
+        unsigned int texture[1];
+        GLCall(glGenTextures(1, texture));
+        GLCall(glBindTexture(GL_TEXTURE_2D, texture[0]));
+
+        int width, height, nrChannels;
+        stbi_set_flip_vertically_on_load(true);
+        unsigned char* data = stbi_load("Textures/concrete.jpg", &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            GLint InternalFormat = -1;
+            switch (nrChannels) {
+            case 1: InternalFormat = GL_RED; break;
+            case 3: InternalFormat = GL_RGB; break;
+            case 4: InternalFormat = GL_RGBA; break;
+            default: InternalFormat = GL_RGB; break;
+            }
+
+            //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            GLCall(glTexImage2D(GL_TEXTURE_2D, 0, InternalFormat, width, height, 0, InternalFormat, GL_UNSIGNED_BYTE, data));
+            // set the texture wrapping/filtering options (on the currently bound texture object)
+            GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+            GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+            //clamp to edge maybe
+            GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+            GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+            // load and generate the texture
+            GLCall(glGenerateMipmap(GL_TEXTURE_2D));
+        }
+        else
+        {
+            std::cout << "Failed to load texture" << std::endl;
+        }
+
+        stbi_image_free(data);
+        GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+
+
+
         float cubeVertices[] =
         {   //Kocka
             //Normale su potrebne za racun osvjetljenja.
         //X     Y      Z       NX    NY     NZ
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -10.0f, -10.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 10.0f, -10.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 10.0f, 10.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 10.0f, 10.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -10.0f, 10.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -10.0f, -10.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, -10.0f, -10.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 10.0f, -10.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 10.0f, 10.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 10.0f, 10.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, -10.0f, 10.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, -10.0f, -10.0f,
 
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, -10.0f, 50.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f, -10.0f, 50.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, -10.0f, -50.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, -10.0f, -50.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f, -10.0f, -50.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, -10.0f, 50.0f,
 
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 10.0f, 50.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 10.0f, 50.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 10.0f, -50.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 10.0f, -50.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 10.0f, -50.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 10.0f, 50.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, -10.0f, -50.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 10.0f, -50.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 10.0f, -50.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 10.0f, -50.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, -10.0f, -50.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, -10.0f, -50.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, -10.0f, 50.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 10.0f, 50.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 10.0f, 50.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 10.0f, 50.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, -10.0f, 50.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, -10.0f, 50.0f,
         };
-        unsigned int stride = (3 + 3) * sizeof(float);
+        unsigned int stride = (3 + 3 + 2) * sizeof(float);
 
 
         // ROOM
@@ -160,6 +200,8 @@ int main(void)
         roomLayout.AddFloat(3);
         //location 1
         roomLayout.AddFloat(3);
+
+        roomLayout.AddFloat(2);
 
         roomVa.AddBuffer(roomVb, roomLayout);
 
@@ -626,7 +668,7 @@ int main(void)
             }
 
             roomShader.Bind();
-          
+            glBindTexture(GL_TEXTURE_2D, texture[0]);
             roomShader.SetUniform4f("u_Color", 105.0f / 255, 105.0f / 255, 105.0f / 255, 1.0f);
             if (room.isCeiling())
                 renderer.Draw(roomVa, ib, roomShader);
@@ -691,7 +733,7 @@ int main(void)
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
-
+        glDeleteTextures(6, texture);
         glfwTerminate();
         return 0;
     }

@@ -6,6 +6,9 @@
 Room::Room(Shader& shader, glm::mat4 view, glm::mat4 projection)
     :ceiling(true),currentAngle(0.0f), currentCornerCameraIndex(-1), Renderable(shader)
 {
+    shader.SetUniform3f("uLightPos", glm::vec3(0, 1, 3));
+    shader.SetUniform3f("uViewPos", glm::vec3(0, 0, 5));
+    shader.SetUniform3f("uLightColor", glm::vec3(1, 1, 1));
     this->model = glm::mat4(1.0f);
     model = glm::scale(model, glm::vec3(1.5f, 1.5f, 2.5f));
 
