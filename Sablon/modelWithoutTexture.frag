@@ -32,7 +32,7 @@ void main()
     vec3 specular = specularStrength * spec * uLightColor;  
 
     vec3 phong = (ambient + diffuse) * u_Color + specular;
-    FragColor = texture(uDiffMap1, chUV) * vec4(phong, 1.0);
-    //FragColor = vec4(phong, 1.0);
+    //FragColor = texture(uDiffMap1, chUV) * vec4(phong, 1.0);
+    FragColor = vec4(phong, 1.0);
 }
 

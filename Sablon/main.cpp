@@ -82,7 +82,7 @@ int main(void)
     Shader houseShader("basic.vert", "basic.frag");
     Shader rampShader("basic.vert", "basic.frag");
     Shader manShader("model.vert", "model.frag");
-    Shader carShader("model.vert", "model.frag");
+    Shader carShader("model.vert", "modelWithoutTexture.frag");
     Shader spotShader("basic.vert", "basic.frag");
 
     {
