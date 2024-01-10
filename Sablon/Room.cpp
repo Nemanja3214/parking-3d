@@ -11,15 +11,23 @@ Room::Room(Shader& shader, glm::mat4 view, glm::mat4 projection)
     //shader.SetUniform3f("uLightColor", glm::vec3(1, 1, 1));
     shader.Bind();
    
-    shader.SetUniform1f("uLight.constant", 2.1f);
-    shader.SetUniform1f("uLight.linear", 0.0f);
-    //shader.SetUniform1f("uLight.linear", 0.09f);
-    shader.SetUniform1f("uLight.quadratic", 0.0f);
-   // shader.SetUniform1f("uLight.quadratic", 0.032f);
+    // spotlight 1
+    shader.SetUniform1f("uSpotlight1.constant", 2.1f);
+    shader.SetUniform1f("uSpotlight1.linear", 0.0f);
+    shader.SetUniform1f("uSpotlight1.quadratic", 0.0f);
 
-    shader.SetUniform3f("uLight.kA", glm::vec3(0.5f, 0.5f, 0.5f));
-    shader.SetUniform3f("uLight.kD", glm::vec3(1.0f, 1.0f, 1.0f));
-    shader.SetUniform3f("uLight.kS", glm::vec3(0.1f, 0.1f, 0.1f));
+    shader.SetUniform3f("uSpotlight1.kA", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader.SetUniform3f("uSpotlight1.kD", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader.SetUniform3f("uSpotlight1.kS", glm::vec3(0.1f, 0.1f, 0.1f));
+
+    // spotlight 2
+    shader.SetUniform1f("uSpotlight2.constant", 2.1f);
+    shader.SetUniform1f("uSpotlight2.linear", 0.0f);
+    shader.SetUniform1f("uSpotlight2.quadratic", 0.0f);
+
+    shader.SetUniform3f("uSpotlight2.kA", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader.SetUniform3f("uSpotlight2.kD", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader.SetUniform3f("uSpotlight2.kS", glm::vec3(0.1f, 0.1f, 0.1f));
 
     shader.SetUniform1f("uMaterial.shine", 52);
     shader.SetUniform3f("uMaterial.kA", glm::vec3(0.5f, 0.5f, 0.5f));
@@ -67,8 +75,11 @@ Room::Room(Shader& shader, glm::mat4 view, glm::mat4 projection)
     }
 
    birdCamera = Camera( glm::vec3(model * glm::vec4(0.0f, 1.5f, 0.0f, 1.0f)), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f) );
-   shader.SetUniform3f("uLight.pos", cornerCameras[3].position);
-   shader.SetUniform3f("uLight.lightDir", cornerCameras[3].look);
+   shader.SetUniform3f("uSpotlight1.pos", cornerCameras[3].position);
+   shader.SetUniform3f("uSpotlight1.lightDir", cornerCameras[3].look);
+
+   shader.SetUniform3f("uSpotlight1.pos", cornerCameras[1].position);
+   shader.SetUniform3f("uSpotlight1.lightDir", cornerCameras[1].look);
    shader.SetUniform3f("uViewPos", glm::vec3(0.0f, 0.0f, 2.0f));
 }
 

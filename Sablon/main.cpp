@@ -661,16 +661,19 @@ int main(void)
                 rampEnabled = true;
             }
 
-            if (room.currentAngle >= 45.0f)
+            if (room.currentAngle >= 35.0f)
                 cameraIncrement = -0.3f;
-            else if (room.currentAngle <= -45.0f) {
+            else if (room.currentAngle <= -35.0f) {
                 cameraIncrement = 0.3f;
             }
             room.currentAngle += cameraIncrement;
             room.setCameras(cameraIncrement);
 
-            roomShader.SetUniform3f("uLight.pos", room.getCornerCameras()[3].position);
-            roomShader.SetUniform3f("uLight.lightDir", room.getCornerCameras()[3].look);
+            roomShader.SetUniform3f("uSpotlight1.pos", room.getCornerCameras()[3].position);
+            roomShader.SetUniform3f("uSpotlight1.lightDir", room.getCornerCameras()[3].look);
+
+            roomShader.SetUniform3f("uSpotlight2.pos", room.getCornerCameras()[1].position);
+            roomShader.SetUniform3f("uSpotlight2.lightDir", room.getCornerCameras()[1].look);
             if (room.currentCornerCameraIndex != -1) {
                 Camera camera = room.getCornerCameras()[room.currentCornerCameraIndex];
                 view = glm::lookAt(camera.position, camera.look, camera.up);

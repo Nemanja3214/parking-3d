@@ -26,39 +26,44 @@ struct Material{ //Materijal objekta
 	float shine; //Uglancanost
 };
 
-uniform Light uLight;
+uniform Light uSpotlight1;
+uniform Light uSpotlight2;
 uniform Material uMaterial;
 uniform vec3 uViewPos;	//Pozicija kamere (za racun spekularne komponente)
 
-void main()
-{    
-    vec3 resA = uLight.kA * uMaterial.kA;
+vec3 getLight(Light l){
+vec3 resA = l.kA * uMaterial.kA;
 
 	vec3 normal = normalize(chNormal);
-	vec3 lightToFrag = normalize(uLight.pos - chFragPos);
+	vec3 lightToFrag = normalize(l.pos - chFragPos);
 	float nD = max(dot(normal, lightToFrag), 0.0);
-	vec3 resD = uLight.kD * ( nD * uMaterial.kD);
+	vec3 resD = l.kD * ( nD * uMaterial.kD);
 
 	vec3 viewDirection = normalize(uViewPos - chFragPos);
 	vec3 reflectionDirection = reflect(-lightToFrag, normal);
 	float s = pow(max(dot(viewDirection, reflectionDirection), 0.0), uMaterial.shine);
-	vec3 resS = uLight.kS * (s * uMaterial.kS);
+	vec3 resS = l.kS * (s * uMaterial.kS);
 
-	float dp = dot(-lightToFrag, normalize(uLight.lightDir));
+	float dp = dot(-lightToFrag, normalize(l.lightDir));
 	if (dp <= 0.95) {
 	   resD = vec3(0.0);
 	   resS = vec3(0);
 	}
 
-	float distance    = length(uLight.pos - chFragPos);
-	float attenuation = 1.0 / (uLight.constant + uLight.linear * distance + 
-    				uLight.quadratic * (distance * distance));   
+	float distance    = length(l.pos - chFragPos);
+	float attenuation = 1.0 / (l.constant + l.linear * distance + 
+    				l.quadratic * (distance * distance));   
 
 	resA  *= attenuation; 
 	resD  *= attenuation;
 	resS *= attenuation;
 
-    FragColor = texture(uDiffMap1, chUV) * vec4(resA + resD + resS, 1.0);
+    return vec3(resA + resD + resS);
+	}
+
+void main()
+{    
+    FragColor = texture(uDiffMap1, chUV) * vec4(getLight(uSpotlight1) + getLight(uSpotlight2), 1.0);
     //FragColor = vec4(phong, 1.0);
 }
 
