@@ -9,12 +9,13 @@ Car::Car(Shader& shader, glm::mat4 view, glm::mat4 projection)
     shader.SetUniform3f("uLightColor", glm::vec3(1, 1, 1));
 
     this->model = glm::mat4(1.0f);
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::scale(model, glm::vec3(0.125f, 0.125f, 0.125f));
     for (int i = 0; i < 6; ++i) {
         float xOffset = (i % 3) * 2.6f - 2.25f;
-        float yOffset = i > 2 ? -9.5f: -4.25f;
+        float yOffset = i > 2 ? 2.25f : 7.5f;
 
-        this->models.push_back(glm::translate(model, glm::vec3(xOffset, -5.8f, yOffset + 2.25)));
+        this->models.push_back(glm::translate(model, glm::vec3(yOffset + -0.55, -5.8f, xOffset)));
     }
 
     shader.SetUniformMat4f("uM", model);

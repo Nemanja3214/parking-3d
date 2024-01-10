@@ -396,7 +396,7 @@ int main(void)
         Model manModel("Models/man/FabConvert.com_uploads_files_1939375_casual_male.obj");
         Man man(manShader, view, projection);
 
-        Model carModel("Models/car/Car.obj");
+        Model carModel("Models/carNew/LowPolyCars.obj");
         Car car(carShader, view, projection);
 
         spotShader.Bind();
@@ -680,7 +680,8 @@ int main(void)
                 int taken = parkingSpots[i].taken;
                 if (taken) {
                     carShader.SetUniformMat4f("uM", car.getModels()[i]);
-                    carShader.SetUniform4f("u_Color", 1.0f, 1.0f, 0.0f, 1.0f);
+                    parkingSpots[i].color[3] = parkingSpots[i].numberVisible ? 0.5f : 1.0f;
+                    carShader.SetUniform4fv("u_Color", parkingSpots[i].color);
                     carModel.Draw(carShader);
                 }
             }
