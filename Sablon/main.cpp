@@ -28,6 +28,7 @@
 #include "model.hpp"
 #include "Man.h"
 #include "Spots.h"
+#include "Car.h"
 
 
 
@@ -69,6 +70,7 @@ int main(void)
     Shader houseShader("basic.vert", "basic.frag");
     Shader rampShader("basic.vert", "basic.frag");
     Shader manShader("model.vert", "model.frag");
+    Shader carShader("model.vert", "model.frag");
     Shader spotShader("basic.vert", "basic.frag");
 
     {
@@ -383,6 +385,9 @@ int main(void)
         Model manModel("Models/man/FabConvert.com_uploads_files_1939375_casual_male.obj");
         Man man(manShader, view, projection);
 
+        Model carModel("Models/car/Car.obj");
+        Car car(carShader, view, projection);
+
         spotShader.Bind();
         float spotVertices[] =
         {   //Kocka
@@ -439,7 +444,7 @@ int main(void)
 
         Spots spots(spotShader, view, projection);
 
-        Renderable scene[] = { room, house, ramp, man, spots};
+        Renderable scene[] = { room, house, ramp, man, spots, car};
         
 
         //ALPHA
@@ -567,7 +572,7 @@ int main(void)
             {
                 rampEnabled = true;
             }
-            for (int i = 0; i < 5; ++i) {
+            for (int i = 0; i < 6; ++i) {
                 scene[i].setView(view);
                 scene[i].setProjection(projection);
             }
@@ -617,6 +622,9 @@ int main(void)
             ramp.setModel(unmovebleModel);
 
             manModel.Draw(manShader);
+
+            carShader.SetUniform4f("u_Color", 1.0f, 1.0f, 0.0f, 1.0f);
+            carModel.Draw(carShader);
 
             spotShader.SetUniform4f("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
             for (glm::mat4 model : spots.getModels()) {
