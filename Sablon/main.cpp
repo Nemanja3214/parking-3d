@@ -137,47 +137,47 @@ int main(void)
         {   //Kocka
             //Normale su potrebne za racun osvjetljenja.
         //X     Y      Z       NX    NY     NZ
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -10.0f, -10.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 10.0f, -10.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 10.0f, 10.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 10.0f, 10.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -10.0f, 10.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -10.0f, -10.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, 1.0f, -10.0f, -10.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, 1.0f, 10.0f, -10.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, 1.0f, 10.0f, 10.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, 1.0f, 10.0f, 10.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, 1.0f, -10.0f, 10.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, 1.0f, -10.0f, -10.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, -10.0f, -10.0f,
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 10.0f, -10.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 10.0f, 10.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 10.0f, 10.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, -10.0f, 10.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, -10.0f, -10.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, -1.0f, -10.0f, -10.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, -1.0f, 10.0f, -10.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, -1.0f, 10.0f, 10.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, -1.0f, 10.0f, 10.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, -1.0f, -10.0f, 10.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, -1.0f, -10.0f, -10.0f,
 
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, -10.0f, 50.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f, -10.0f, 50.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, -10.0f, -50.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, -10.0f, -50.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f, -10.0f, -50.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, -10.0f, 50.0f,
+        -0.5f,  0.5f,  0.5f, 1.0f,  0.0f,  0.0f, -10.0f, 50.0f,
+        -0.5f,  0.5f, -0.5f, 1.0f,  0.0f,  0.0f, -10.0f, 50.0f,
+        -0.5f, -0.5f, -0.5f, 1.0f,  0.0f,  0.0f, -10.0f, -50.0f,
+        -0.5f, -0.5f, -0.5f, 1.0f,  0.0f,  0.0f, -10.0f, -50.0f,
+        -0.5f, -0.5f,  0.5f, 1.0f,  0.0f,  0.0f, -10.0f, -50.0f,
+        -0.5f,  0.5f,  0.5f, 1.0f,  0.0f,  0.0f, -10.0f, 50.0f,
 
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 10.0f, 50.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 10.0f, 50.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 10.0f, -50.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 10.0f, -50.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 10.0f, -50.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 10.0f, 50.0f,
+         0.5f,  0.5f,  0.5f,  -1.0f,  0.0f,  0.0f, 10.0f, 50.0f,
+         0.5f,  0.5f, -0.5f,  -1.0f,  0.0f,  0.0f, 10.0f, 50.0f,
+         0.5f, -0.5f, -0.5f,  -1.0f,  0.0f,  0.0f, 10.0f, -50.0f,
+         0.5f, -0.5f, -0.5f,  -1.0f,  0.0f,  0.0f, 10.0f, -50.0f,
+         0.5f, -0.5f,  0.5f,  -1.0f,  0.0f,  0.0f, 10.0f, -50.0f,
+         0.5f,  0.5f,  0.5f,  -1.0f,  0.0f,  0.0f, 10.0f, 50.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, -10.0f, -50.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 10.0f, -50.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 10.0f, -50.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 10.0f, -50.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, -10.0f, -50.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, -10.0f, -50.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f, -10.0f, -50.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f, 10.0f, -50.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f, 10.0f, -50.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f, 10.0f, -50.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f, -10.0f, -50.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f, -10.0f, -50.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, -10.0f, 50.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 10.0f, 50.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 10.0f, 50.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 10.0f, 50.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, -10.0f, 50.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, -10.0f, 50.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  -1.0f,  0.0f, -10.0f, 50.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  -1.0f,  0.0f, 10.0f, 50.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  -1.0f,  0.0f, 10.0f, 50.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  -1.0f,  0.0f, 10.0f, 50.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  -1.0f,  0.0f, -10.0f, 50.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  -1.0f,  0.0f, -10.0f, 50.0f,
         };
         unsigned int stride = (3 + 3 + 2) * sizeof(float);
 
@@ -515,6 +515,8 @@ int main(void)
         const double targetFPS = 120.0;
         double lastTime = 0.0;
 
+        bool isLighting = true;
+
         int numberKeys[6] = { GLFW_KEY_1 , GLFW_KEY_2, GLFW_KEY_3, GLFW_KEY_4, GLFW_KEY_5, GLFW_KEY_6 };
         while (!glfwWindowShouldClose(window))
         {
@@ -573,6 +575,16 @@ int main(void)
             if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
             {
                 view = glm::rotate(view, glm::radians(0.5f), glm::vec3(0.0f, 1.0f, 0.0f));
+            }
+            if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+            {
+                isLighting = !isLighting;
+                if (isLighting) {
+                    glEnable(GL_LIGHTING);
+                }
+                else {
+                    glDisable(GL_LIGHTING);
+                }
             }
 
             if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -657,6 +669,8 @@ int main(void)
             room.currentAngle += cameraIncrement;
             room.setCameras(cameraIncrement);
 
+            roomShader.SetUniform3f("uLight.pos", room.getCornerCameras()[3].position);
+            roomShader.SetUniform3f("uLight.lightDir", room.getCornerCameras()[3].look);
             if (room.currentCornerCameraIndex != -1) {
                 Camera camera = room.getCornerCameras()[room.currentCornerCameraIndex];
                 view = glm::lookAt(camera.position, camera.look, camera.up);

@@ -15,6 +15,7 @@ void main()
 {
     chUV = inUV;
     chFragPos = vec3(uM * vec4(inPos, 1.0));
+    // because of non uniform scaling, fix
     chNormal = mat3(transpose(inverse(uM))) * inNormal;  
     
     gl_Position = uP * uV * vec4(chFragPos, 1.0);

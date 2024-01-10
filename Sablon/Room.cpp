@@ -6,9 +6,25 @@
 Room::Room(Shader& shader, glm::mat4 view, glm::mat4 projection)
     :ceiling(true),currentAngle(0.0f), currentCornerCameraIndex(-1), Renderable(shader)
 {
-    shader.SetUniform3f("uLightPos", glm::vec3(0, 1, 3));
-    shader.SetUniform3f("uViewPos", glm::vec3(0, 0, 5));
-    shader.SetUniform3f("uLightColor", glm::vec3(1, 1, 1));
+    //shader.SetUniform3f("uLightPos", glm::vec3(0, 0, 12));
+    //shader.SetUniform3f("uViewPos", glm::vec3(0, 0, 5));
+    //shader.SetUniform3f("uLightColor", glm::vec3(1, 1, 1));
+    shader.Bind();
+   
+    shader.SetUniform1f("uLight.constant", 2.1f);
+    shader.SetUniform1f("uLight.linear", 0.0f);
+    //shader.SetUniform1f("uLight.linear", 0.09f);
+    shader.SetUniform1f("uLight.quadratic", 0.0f);
+   // shader.SetUniform1f("uLight.quadratic", 0.032f);
+
+    shader.SetUniform3f("uLight.kA", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader.SetUniform3f("uLight.kD", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader.SetUniform3f("uLight.kS", glm::vec3(0.1f, 0.1f, 0.1f));
+
+    shader.SetUniform1f("uMaterial.shine", 52);
+    shader.SetUniform3f("uMaterial.kA", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader.SetUniform3f("uMaterial.kD", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader.SetUniform3f("uMaterial.kS", glm::vec3(0.5f, 0.5f, 0.5f));
     this->model = glm::mat4(1.0f);
     model = glm::scale(model, glm::vec3(1.5f, 1.5f, 2.5f));
 
@@ -51,6 +67,9 @@ Room::Room(Shader& shader, glm::mat4 view, glm::mat4 projection)
     }
 
    birdCamera = Camera( glm::vec3(model * glm::vec4(0.0f, 1.5f, 0.0f, 1.0f)), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f) );
+   shader.SetUniform3f("uLight.pos", cornerCameras[3].position);
+   shader.SetUniform3f("uLight.lightDir", cornerCameras[3].look);
+   shader.SetUniform3f("uViewPos", glm::vec3(0.0f, 0.0f, 2.0f));
 }
 
 void Room::setCameras(float direction) {
