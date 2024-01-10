@@ -1,17 +1,14 @@
 #pragma once
 #include "Renderable.h"
-
-struct Camera {
-	glm::vec3 position;
-	glm::vec3 look;
-	glm::vec3 up;
-};
+#include "Camera.h"
 
 
 
 class Room : public Renderable {
 public:
 	Room(Shader& shader, glm::mat4 view, glm::mat4 projection);
+
+	void setCameras(float direction);
 
 	using Renderable::setModel;
 	using Renderable::getModel;
@@ -25,6 +22,8 @@ public:
 	bool isCeiling();
 	void setCeiling(bool ceiling);
 	Camera getBirdCamera();
+	float currentAngle;
+
 private:
 	std::vector<Camera> cornerCameras;
 	Camera birdCamera;

@@ -152,13 +152,12 @@ int main(void)
         roomVa.AddBuffer(roomVb, roomLayout);
 
         Room room(roomShader, view, projection);
+
+        float cameraIncrement = 0.3f;
         roomShader.Unbind();
 
 
         // HOUSE
-
-
-
         float cubeWithWindowVertices[] =
         {   //Kocka
             //Normale su potrebne za racun osvjetljenja.
@@ -422,13 +421,6 @@ int main(void)
 
            3, 7, 4,
            3, 4, 0
-
-
-
-
-           // 4, 5, 6,
-            //6, 7, 4,
-
         };
         IndexBuffer spotIndicesIb(spotIndices, 24);
 
@@ -484,6 +476,7 @@ int main(void)
                 glfwSetWindowShouldClose(window, GL_TRUE);
 
             GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
            
             if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
             {
@@ -527,7 +520,6 @@ int main(void)
             if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
             {
                 projection = ortho;
-                //projection = glm::perspective(glm::radians(90.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
                 // position inside house, look down, up is in direction of window
                 Camera camera = room.getBirdCamera();
                 room.setCeiling(false);
@@ -572,14 +564,20 @@ int main(void)
             {
                 rampEnabled = true;
             }
+
             for (int i = 0; i < 6; ++i) {
                 scene[i].setView(view);
                 scene[i].setProjection(projection);
             }
 
-            
-          
             roomShader.Bind();
+            if (room.currentAngle >= 45.0f)
+                cameraIncrement = -0.3f;
+            else if (room.currentAngle <= -45.0f) {
+                cameraIncrement = 0.3f;
+            }
+            room.currentAngle += cameraIncrement;
+            room.setCameras(cameraIncrement);
             roomShader.SetUniform4f("u_Color", 105.0f / 255, 105.0f / 255, 105.0f / 255, 1.0f);
             if (room.isCeiling())
                 renderer.Draw(roomVa, ib, roomShader);

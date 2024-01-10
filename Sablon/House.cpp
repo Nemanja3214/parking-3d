@@ -21,7 +21,7 @@ House::House(Shader& shader, glm::mat4 view, glm::mat4 projection)
     this->projection = projection;
     shader.SetUniformMat4f("uP", projection);
 
-    houseCamera = { glm::vec3(model * glm::vec4(0.0f, 0.5f, 0.0f, 1.0f)), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f) };
+    houseCamera = Camera( glm::vec3(model * glm::vec4(0.0f, 0.5f, 0.0f, 1.0f)), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f) );
 }
 
 Camera House::getHouseCamera()
