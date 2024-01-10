@@ -565,7 +565,7 @@ int main(void)
 
             }
 
-            if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+            if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS)
             {
                 room.currentCornerCameraIndex = 0;
                 projection = perspective;
@@ -574,7 +574,7 @@ int main(void)
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
 
-            if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+            if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS)
             {
                 room.currentCornerCameraIndex = 1;
                 projection = perspective;
@@ -583,7 +583,7 @@ int main(void)
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
 
-            if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+            if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
             {
                 room.currentCornerCameraIndex = 2;
                 projection = perspective;
@@ -592,7 +592,7 @@ int main(void)
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
 
-            if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
+            if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
             {
                 room.currentCornerCameraIndex = 3;
                 projection = perspective;
