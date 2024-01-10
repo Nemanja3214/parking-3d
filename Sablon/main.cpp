@@ -27,6 +27,8 @@
 #include "Ramp.h"
 #include "model.hpp"
 #include "Man.h"
+#include "Spots.h"
+
 
 
 int main(void)
@@ -67,13 +69,16 @@ int main(void)
     Shader houseShader("basic.vert", "basic.frag");
     Shader rampShader("basic.vert", "basic.frag");
     Shader manShader("model.vert", "model.frag");
+    Shader spotShader("basic.vert", "basic.frag");
 
     {
         Renderer renderer;
 
         glm::mat4 view = glm::mat4(1.0f);
         view = glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 perspective = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
         glm::mat4 projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
+        glm::mat4 ortho = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 10.0f);
         float cubeVertices[] =
         {   //Kocka
             //Normale su potrebne za racun osvjetljenja.
@@ -378,7 +383,63 @@ int main(void)
         Model manModel("Models/man/FabConvert.com_uploads_files_1939375_casual_male.obj");
         Man man(manShader, view, projection);
 
-        Renderable scene[] = { room, house, ramp, man};
+        spotShader.Bind();
+        float spotVertices[] =
+        {   //Kocka
+            //Normale su potrebne za racun osvjetljenja.
+        //X     Y      Z       NX    NY     NZ
+        -0.5f, -0.5f, 0.0f,  0.0f,  1.0f,  0.0f,
+         0.5f, -0.5f, 0.0f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,0.0f, 0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, 0.0f,  0.0f,  1.0f,  0.0f,
+
+        //inner part
+         -0.25f, -0.25f, 0.0f,  0.0f,  1.0f,  0.0f,
+         0.25f, -0.25f, 0.0f,  0.0f,  1.0f,  0.0f,
+         0.25f,  0.25f,0.0f, 0.0f,  1.0f,  0.0f,
+        -0.25f,  0.25f, 0.0f,  0.0f,  1.0f,  0.0f,
+
+        };
+        stride = (3 + 3) * sizeof(float);
+        VertexArray spotVa;
+        VertexBuffer spotVb(spotVertices, 8 * stride);
+
+        unsigned int spotIndices[] = // indexes
+        {
+           0,4,1,
+           4,5, 1,
+
+           1,5,2,
+           5,6,2,
+
+           2, 6, 3,
+           6, 7, 3,
+
+           3, 7, 4,
+           3, 4, 0
+
+
+
+
+           // 4, 5, 6,
+            //6, 7, 4,
+
+        };
+        IndexBuffer spotIndicesIb(spotIndices, 24);
+
+        VertexBufferLayout spotLayout;
+        // location 0
+        spotLayout.AddFloat(3);
+
+        // location 1
+        spotLayout.AddFloat(3);
+
+        spotVa.AddBuffer(spotVb, spotLayout);
+        spotShader.Unbind();
+
+        Spots spots(spotShader, view, projection);
+
+        Renderable scene[] = { room, house, ramp, man, spots};
         
 
         //ALPHA
@@ -450,7 +511,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
             {
-                projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
+                projection = perspective;
                 room.setCeiling(true);
                 // position inside house, look down, up is in direction of window
                 Camera camera = house.getHouseCamera();
@@ -460,7 +521,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
             {
-                projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 10.0f);
+                projection = ortho;
                 //projection = glm::perspective(glm::radians(90.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
                 // position inside house, look down, up is in direction of window
                 Camera camera = room.getBirdCamera();
@@ -471,7 +532,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
             {
-                projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
+                projection = perspective;
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[0];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
@@ -479,7 +540,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
             {
-                projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
+                projection = perspective;
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[1];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
@@ -487,7 +548,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
             {
-                projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
+                projection = perspective;
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[2];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
@@ -495,7 +556,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
             {
-                projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
+                projection = perspective;
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[3];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
@@ -506,7 +567,7 @@ int main(void)
             {
                 rampEnabled = true;
             }
-            for (int i = 0; i < 4; ++i) {
+            for (int i = 0; i < 5; ++i) {
                 scene[i].setView(view);
                 scene[i].setProjection(projection);
             }
@@ -515,7 +576,7 @@ int main(void)
           
             roomShader.Bind();
             roomShader.SetUniform4f("u_Color", 105.0f / 255, 105.0f / 255, 105.0f / 255, 1.0f);
-            if(room.isCeiling())
+            if (room.isCeiling())
                 renderer.Draw(roomVa, ib, roomShader);
             else
                 renderer.Draw(roomVa, noCeilingIb, roomShader);
@@ -556,6 +617,13 @@ int main(void)
             ramp.setModel(unmovebleModel);
 
             manModel.Draw(manShader);
+
+            spotShader.SetUniform4f("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
+            for (glm::mat4 model : spots.getModels()) {
+                spotShader.SetUniformMat4f("uM", model);
+                renderer.Draw(spotVa, spotIndicesIb, spotShader);
+            }
+            
 
             lastTime = glfwGetTime();
             glfwSwapBuffers(window);

@@ -7,7 +7,7 @@ Room::Room(Shader& shader, glm::mat4 view, glm::mat4 projection)
     :ceiling(true), Renderable(shader)
 {
     this->model = glm::mat4(1.0f);
-    model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+    model = glm::scale(model, glm::vec3(1.5f, 1.5f, 2.5f));
 
     shader.SetUniformMat4f("uM", model);
 
