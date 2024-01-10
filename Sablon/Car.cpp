@@ -10,11 +10,12 @@ Car::Car(Shader& shader, glm::mat4 view, glm::mat4 projection)
 
     this->model = glm::mat4(1.0f);
     model = glm::scale(model, glm::vec3(0.125f, 0.125f, 0.125f));
-   // model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-   // model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    //model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    for (int i = 0; i < 6; ++i) {
+        float xOffset = (i % 3) * 2.6f - 2.25f;
+        float yOffset = i > 2 ? -9.5f: -4.25f;
 
-    model = glm::translate(model, glm::vec3(-2.5f, -5.75f, -1.75f));
+        this->models.push_back(glm::translate(model, glm::vec3(xOffset, -5.8f, yOffset + 2.25)));
+    }
 
     shader.SetUniformMat4f("uM", model);
 
@@ -24,4 +25,9 @@ Car::Car(Shader& shader, glm::mat4 view, glm::mat4 projection)
     this->projection = projection;
     shader.SetUniformMat4f("uP", projection);
 
+}
+
+std::vector<glm::mat4> Car::getModels()
+{
+    return models;
 }

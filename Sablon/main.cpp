@@ -662,21 +662,27 @@ int main(void)
                 rampShader.SetUniformMat4f("uM", ramp.rotate());
             }
            
-          
-           
             rampShader.SetUniform4f("u_Color", 1.0f, 1.0f, 0.0f, 1.0f);
             renderer.Draw(rampVa, moveableRampIndicesIb, rampShader);
             ramp.setModel(unmovebleModel);
 
             manModel.Draw(manShader);
 
-            carShader.SetUniform4f("u_Color", 1.0f, 1.0f, 0.0f, 1.0f);
-            carModel.Draw(carShader);
-
             spotShader.SetUniform4f("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
             for (glm::mat4 model : spots.getModels()) {
                 spotShader.SetUniformMat4f("uM", model);
                 renderer.Draw(spotVa, spotIndicesIb, spotShader);
+            }
+
+            for (int i = 0; i < 6; ++i) {
+
+                parkingSpots[i].taken = parkingSpots[i].endTime > currentTime;
+                int taken = parkingSpots[i].taken;
+                if (taken) {
+                    carShader.SetUniformMat4f("uM", car.getModels()[i]);
+                    carShader.SetUniform4f("u_Color", 1.0f, 1.0f, 0.0f, 1.0f);
+                    carModel.Draw(carShader);
+                }
             }
             
 

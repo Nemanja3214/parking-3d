@@ -13,6 +13,9 @@ public:
 	using Renderable::getProjection;
 	using Renderable::SetMatrices;
 	using Renderable::rotateAroundCenter;
+	std::vector<glm::mat4> getModels();
+
 
 private:
+	std::vector<glm::mat4> models;
 };
