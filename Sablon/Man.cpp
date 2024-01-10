@@ -14,7 +14,7 @@ Man::Man(Shader& shader, glm::mat4 view, glm::mat4 projection)
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     //model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
    
-    model = glm::translate(model, glm::vec3(-1.7f, 2.25f, -1.75f));
+    model = glm::translate(model, glm::vec3(-2.1f, 2.25f, -1.75f));
 
     shader.SetUniformMat4f("uM", model);
 

@@ -79,7 +79,7 @@ int main(void)
     }
     //shaders and finding uniforms
     Shader roomShader("texture.vert", "texture.frag");
-    Shader houseShader("basic.vert", "basic.frag");
+    Shader houseShader("texture.vert", "phong.frag");
     Shader rampShader("basic.vert", "basic.frag");
     Shader manShader("model.vert", "model.frag");
     Shader carShader("model.vert", "modelWithoutTexture.frag");
@@ -216,54 +216,54 @@ int main(void)
         {   //Kocka
             //Normale su potrebne za racun osvjetljenja.
         //X     Y      Z       NX    NY     NZ
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.0f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.0f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f,  0.0f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.0f, -0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.0f, -0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f,  0.0f, -0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
 
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, // left of window
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, 1.0f,  0.0f,  0.0f, // left of window
+        -0.5f,  0.5f, -0.5f, 1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, 1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, 1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, 1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, 1.0f,  0.0f,  0.0f,
 
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, // right of window
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  -1.0f,  0.0f,  0.0f, // right of window
+         0.5f,  0.5f, -0.5f,  -1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  -1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  -1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  -1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  -1.0f,  0.0f,  0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, // bottom
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f, // bottom
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, // top
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  -1.0f,  0.0f, // top
+         0.5f,  0.5f, -0.5f,  0.0f,  -1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  -1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  -1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  -1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  -1.0f,  0.0f,
 
-        -0.5f, 0.0f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f, 0.0f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f, 0.0f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, 0.0f, -0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f, 0.0f, -0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f, 0.0f, -0.5f,  0.0f,  0.0f, 1.0f,
 
         // monitor
 
@@ -691,7 +691,7 @@ int main(void)
                 renderer.Draw(roomVa, ib, roomShader);
             else
                 renderer.Draw(roomVa, noCeilingIb, roomShader);
-            houseShader.SetUniform4f("u_Color", 0.0f, 0.0f, 1.0f, 1.0f);
+            houseShader.SetUniform4f("u_Color", 0.1f, 0.2f, 0.8f, 1.0f);
             renderer.Draw(houseVa, withoutWindowIndicesIb, houseShader);
 
             houseShader.SetUniform4f("u_Color", 167.0f/255, 199.0f/255, 203.0f/255, 0.5f);
