@@ -30,7 +30,19 @@
 #include "Spots.h"
 #include "Car.h"
 
+struct ParkingSpot {
+    double startTime;
+    double endTime;
+    glm::vec4 color;
+    bool taken;
+    bool numberVisible;
+};
 
+void takePlace(ParkingSpot spots[], int i, double now);
+void freePlace(ParkingSpot spots[], int i, double now);
+void resetPlace(ParkingSpot spots[], int i, double now);
+
+ParkingSpot parkingSpots[6];
 
 int main(void)
 {
@@ -460,6 +472,8 @@ int main(void)
 
         const double targetFPS = 120.0;
         double lastTime = 0.0;
+
+        int numberKeys[6] = { GLFW_KEY_1 , GLFW_KEY_2, GLFW_KEY_3, GLFW_KEY_4, GLFW_KEY_5, GLFW_KEY_6 };
         while (!glfwWindowShouldClose(window))
         {
             double currentTime = glfwGetTime();
@@ -472,8 +486,30 @@ int main(void)
                 std::this_thread::sleep_for(std::chrono::duration<double>(sleepTime));
             }
 
+            for (int i = 0; i < 6; ++i) {
+
+                parkingSpots[i].taken = parkingSpots[i].endTime > currentTime;
+                int taken = parkingSpots[i].taken;
+                //progress = taken ? (now - spots[i].startTime) / (spots[i].endTime - spots[i].startTime) : 0.0f;
+            }
+
+            for (int j = 0; j < 6; ++j) {
+                if (glfwGetKey(window, numberKeys[j]) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+                    freePlace(parkingSpots, j, currentTime);
+                else if (glfwGetKey(window, numberKeys[j]) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+                    resetPlace(parkingSpots, j, currentTime);
+                else if (glfwGetKey(window, numberKeys[j]) == GLFW_PRESS)
+                    takePlace(parkingSpots, j, currentTime);
+                else if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+                    parkingSpots[j].numberVisible = true;
+                else if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
+                    parkingSpots[j].numberVisible = false;
+            }
+
             if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
                 glfwSetWindowShouldClose(window, GL_TRUE);
+
+
 
             GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
@@ -509,6 +545,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
             {
+                room.currentCornerCameraIndex = -1;
                 projection = perspective;
                 room.setCeiling(true);
                 // position inside house, look down, up is in direction of window
@@ -517,8 +554,9 @@ int main(void)
 
             }
 
-            if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+            if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
             {
+                room.currentCornerCameraIndex = -1;
                 projection = ortho;
                 // position inside house, look down, up is in direction of window
                 Camera camera = room.getBirdCamera();
@@ -529,6 +567,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
             {
+                room.currentCornerCameraIndex = 0;
                 projection = perspective;
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[0];
@@ -537,6 +576,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
             {
+                room.currentCornerCameraIndex = 1;
                 projection = perspective;
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[1];
@@ -545,6 +585,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
             {
+                room.currentCornerCameraIndex = 2;
                 projection = perspective;
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[2];
@@ -553,6 +594,7 @@ int main(void)
 
             if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
             {
+                room.currentCornerCameraIndex = 3;
                 projection = perspective;
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[3];
@@ -565,12 +607,6 @@ int main(void)
                 rampEnabled = true;
             }
 
-            for (int i = 0; i < 6; ++i) {
-                scene[i].setView(view);
-                scene[i].setProjection(projection);
-            }
-
-            roomShader.Bind();
             if (room.currentAngle >= 45.0f)
                 cameraIncrement = -0.3f;
             else if (room.currentAngle <= -45.0f) {
@@ -578,6 +614,19 @@ int main(void)
             }
             room.currentAngle += cameraIncrement;
             room.setCameras(cameraIncrement);
+
+            if (room.currentCornerCameraIndex != -1) {
+                Camera camera = room.getCornerCameras()[room.currentCornerCameraIndex];
+                view = glm::lookAt(camera.position, camera.look, camera.up);
+            }
+
+            for (int i = 0; i < 6; ++i) {
+                scene[i].setView(view);
+                scene[i].setProjection(projection);
+            }
+
+            roomShader.Bind();
+          
             roomShader.SetUniform4f("u_Color", 105.0f / 255, 105.0f / 255, 105.0f / 255, 1.0f);
             if (room.isCeiling())
                 renderer.Draw(roomVa, ib, roomShader);
@@ -640,3 +689,32 @@ int main(void)
         return 0;
     }
 }
+void takePlace(ParkingSpot spots[], int i, double now) {
+    if (!spots[i].taken)
+        spots[i] = {
+            now,
+            now + 20,
+            glm::vec4((rand() % 255) / 255.0f, (rand() % 255) / 255.0f, (rand() % 255) / 255.0f, spots[i].numberVisible ? 0.5f : 1.0f),
+            true,
+            spots[i].numberVisible
+    };
+}
+
+void freePlace(ParkingSpot spots[], int i, double now) {
+    if (spots[i].taken)
+        spots[i] = {
+            0,
+            0,
+            glm::vec4(),
+            false,
+            spots[i].numberVisible
+    };
+}
+
+void resetPlace(ParkingSpot spots[], int i, double now) {
+    if (spots[i].taken) {
+        spots[i].startTime = now;
+        spots[i].endTime = now + 20;
+    }
+}
+

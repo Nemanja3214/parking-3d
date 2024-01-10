@@ -23,6 +23,7 @@ public:
 	void setCeiling(bool ceiling);
 	Camera getBirdCamera();
 	float currentAngle;
+	int currentCornerCameraIndex;
 
 private:
 	std::vector<Camera> cornerCameras;
