@@ -8,6 +8,8 @@ in vec2 chUV;
 uniform sampler2D uDiffMap1;
 uniform vec4 u_Color;
 
+uniform int uIsLight;
+
 struct Light{ //Svjetlosni izvor
 	vec3 pos; //Pozicija
 	vec3 lightDir;
@@ -63,7 +65,9 @@ vec3 resA = l.kA * uMaterial.kA;
 
 void main()
 {    
-    FragColor = texture(uDiffMap1, chUV) * vec4(getLight(uSpotlight1) + getLight(uSpotlight2), 1.0);
+    FragColor =
+	uIsLight == 1 ? texture(uDiffMap1, chUV) * vec4(getLight(uSpotlight1) + getLight(uSpotlight2), 1.0) :
+	texture(uDiffMap1, chUV) * u_Color;
     //FragColor = vec4(phong, 1.0);
 }
 

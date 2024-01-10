@@ -6,6 +6,7 @@ in vec3 chFragPos;
 in vec2 chUV;
 
 uniform vec4 u_Color;
+uniform int uIsLight;
 
 struct Light{ //Svjetlosni izvor
 	vec3 pos; //Pozicija
@@ -54,6 +55,6 @@ vec3 resA = l.kA * uMaterial.kA;
 
 void main()
 {    
-    FragColor = vec4(getLight(uLight), u_Color[3]);
+    FragColor = uIsLight == 1 ? vec4(getLight(uLight), u_Color[3]) : u_Color;
 }
 

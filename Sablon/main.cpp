@@ -580,10 +580,12 @@ int main(void)
             {
                 isLighting = !isLighting;
                 if (isLighting) {
-                    glEnable(GL_LIGHTING);
+                    houseShader.SetUniform1i("uIsLight", 1);
+                    roomShader.SetUniform1i("uIsLight", 1);
                 }
                 else {
-                    glDisable(GL_LIGHTING);
+                    houseShader.SetUniform1i("uIsLight", 0);
+                    roomShader.SetUniform1i("uIsLight", 0);
                 }
             }
 
