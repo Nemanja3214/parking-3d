@@ -113,13 +113,13 @@ unsigned int Shader::compileShader(GLenum type, const char* source)
 
     int success; //Da li je kompajliranje bilo uspjesno (1 - da)
     char infoLog[512]; //Poruka o gresci (Objasnjava sta je puklo unutar sejdera)
-    glShaderSource(shader, 1, &sourceCode, NULL); //Postavi izvorni kod sejdera
-    glCompileShader(shader); //Kompajliraj sejder
+    GLCall(glShaderSource(shader, 1, &sourceCode, NULL)); //Postavi izvorni kod sejdera
+    GLCall(glCompileShader(shader)); //Kompajliraj sejder
 
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success); //Provjeri da li je sejder uspjesno kompajliran
+    GLCall(glGetShaderiv(shader, GL_COMPILE_STATUS, &success)); //Provjeri da li je sejder uspjesno kompajliran
     if (success == GL_FALSE)
     {
-        glGetShaderInfoLog(shader, 512, NULL, infoLog); //Pribavi poruku o gresci
+         GLCall(glGetShaderInfoLog(shader, 512, NULL, infoLog)); //Pribavi poruku o gresci
         if (type == GL_VERTEX_SHADER)
             printf("VERTEX");
         else if (type == GL_FRAGMENT_SHADER)
@@ -143,15 +143,15 @@ unsigned int Shader::createShader(const char* vsSource, const char* fsSource)
     fragmentShader = compileShader(GL_FRAGMENT_SHADER, fsSource); //Napravi i kompajliraj fragment sejder
 
     //Zakaci verteks i fragment sejdere za objedinjeni program
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
+    GLCall(glAttachShader(program, vertexShader));
+    GLCall(glAttachShader(program, fragmentShader));
 
-    glLinkProgram(program); //Povezi ih u jedan objedinjeni sejder program
-    glValidateProgram(program); //Izvrsi provjeru novopecenog programa
+    GLCall(glLinkProgram(program)); //Povezi ih u jedan objedinjeni sejder program
+    GLCall(glValidateProgram(program)); //Izvrsi provjeru novopecenog programa
 
     int success;
     char infoLog[512];
-    glGetProgramiv(program, GL_VALIDATE_STATUS, &success); //Slicno kao za sejdere
+    GLCall(glGetProgramiv(program, GL_VALIDATE_STATUS, &success)); //Slicno kao za sejdere
     if (success == GL_FALSE)
     {
         glGetShaderInfoLog(program, 512, NULL, infoLog);
@@ -160,10 +160,10 @@ unsigned int Shader::createShader(const char* vsSource, const char* fsSource)
     }
 
     //Posto su kodovi sejdera u objedinjenom sejderu, oni pojedinacni programi nam ne trebaju, pa ih brisemo zarad ustede na memoriji
-    glDetachShader(program, vertexShader);
-    glDeleteShader(vertexShader);
-    glDetachShader(program, fragmentShader);
-    glDeleteShader(fragmentShader);
+    GLCall(glDetachShader(program, vertexShader));
+    GLCall(glDeleteShader(vertexShader));
+    GLCall(glDetachShader(program, fragmentShader));
+    GLCall(glDeleteShader(fragmentShader));
 
     return program;
 }

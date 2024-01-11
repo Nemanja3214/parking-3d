@@ -5,10 +5,20 @@ in vec3 chNormal;
 in vec3 chFragPos;  
 in vec2 chUV;
 
+in vec2 chUV2;
+
+in vec3 TexCoords; // direction vector representing a 3D texture coordinate
+
+
 uniform sampler2D uDiffMap1;
+uniform samplerCube cubemap; // cubemap texture sampler
+uniform sampler2D emission;
+
 uniform vec4 u_Color;
 
 uniform int uIsLight;
+uniform int uIsEmission;
+
 
 struct Light{ //Svjetlosni izvor
 	vec3 pos; //Pozicija
@@ -26,6 +36,7 @@ struct Material{ //Materijal objekta
 	vec3 kD;
 	vec3 kS;
 	float shine; //Uglancanost
+	
 };
 
 uniform Light uSpotlight1;
@@ -65,9 +76,13 @@ vec3 resA = l.kA * uMaterial.kA;
 
 void main()
 {    
-    FragColor =
-	uIsLight == 1 ? texture(uDiffMap1, chUV) * vec4(getLight(uSpotlight1) + getLight(uSpotlight2), 1.0) :
+	FragColor = uIsLight == 1 ? texture(uDiffMap1, chUV) * vec4(getLight(uSpotlight1) + getLight(uSpotlight2), u_Color[3]) :
 	texture(uDiffMap1, chUV) * u_Color;
-    //FragColor = vec4(phong, 1.0);
+	if(uIsEmission == 1){
+		FragColor +=  0.5*texture(emission, chUV2);
+	}
+	//vec4 a = texture(cubemap, TexCoords);
+	//FragColor = vec4((a[0] + a[1] + a[2]) / 3.0, 0.0, 0.0, 1.0);
+	//FragColor = texture(cubemap, TexCoords);
 }
 

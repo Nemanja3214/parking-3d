@@ -10,6 +10,8 @@ Room::Room(Shader& shader, glm::mat4 view, glm::mat4 projection)
     //shader.SetUniform3f("uViewPos", glm::vec3(0, 0, 5));
     //shader.SetUniform3f("uLightColor", glm::vec3(1, 1, 1));
     shader.Bind();
+
+    shader.SetUniform1i("uIsEmission", 1);
    
     // spotlight 1
     shader.SetUniform1f("uSpotlight1.constant", 2.1f);
