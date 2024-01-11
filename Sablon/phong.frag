@@ -7,6 +7,7 @@ in vec2 chUV;
 
 uniform vec4 u_Color;
 uniform int uIsLight;
+uniform int uIsLightbulbOn;
 
 struct Light{ //Svjetlosni izvor
 	vec3 pos; //Pozicija
@@ -30,7 +31,10 @@ uniform Material uMaterial;
 uniform vec3 uViewPos;	//Pozicija kamere (za racun spekularne komponente)
 
 vec3 getLight(Light l){
-vec3 resA = l.kA * uMaterial.kA;
+	vec3 resA = l.kA * uMaterial.kA;
+	if(uIsLightbulbOn == 1){
+		return resA * vec3(u_Color);
+	}
 
 	vec3 normal = normalize(chNormal);
 	vec3 lightToFrag = normalize(l.pos - chFragPos);

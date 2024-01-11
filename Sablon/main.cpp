@@ -516,6 +516,7 @@ int main(void)
         double lastTime = 0.0;
 
         bool isLighting = true;
+        bool isLightbulbOn = true;
 
         int numberKeys[6] = { GLFW_KEY_1 , GLFW_KEY_2, GLFW_KEY_3, GLFW_KEY_4, GLFW_KEY_5, GLFW_KEY_6 };
         while (!glfwWindowShouldClose(window))
@@ -588,6 +589,18 @@ int main(void)
                     roomShader.SetUniform1i("uIsLight", 0);
                 }
             }
+
+            if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
+            {
+                isLightbulbOn = !isLightbulbOn;
+                if (isLightbulbOn) {
+                    houseShader.SetUniform1i("uIsLightbulbOn", 1);
+                }
+                else {
+                    houseShader.SetUniform1i("uIsLightbulbOn", 0);
+                }
+            }
+            
 
             if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             {
