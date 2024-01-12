@@ -29,6 +29,7 @@
 #include "Man.h"
 #include "Spots.h"
 #include "Car.h"
+#include "Index.h"
 
 struct ParkingSpot {
     double startTime;
@@ -80,6 +81,7 @@ int main(void)
     }
     //shaders and finding uniforms
     Shader roomShader("texture.vert", "texture.frag");
+    Shader indexShader("texture.vert", "texture.frag");
     Shader houseShader("texture.vert", "phong.frag");
     Shader rampShader("basic.vert", "basic.frag");
     Shader manShader("model.vert", "model.frag");
@@ -209,6 +211,33 @@ int main(void)
         GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
         GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 
+        float rectangleVertices[] = {
+            -1.0f, -1.0f, 0.0f,   0.0f,  0.0f, 1.0f,    0.0f,   0.0f,   0.0f, 0.0f,
+            1.0f, -1.0f,0.0f,     0.0f,  0.0f, 1.0f,    1.0f,   0.0f,   0.0f, 0.0f,
+            -1.0f, 1.0f,0.0f,     0.0f,  0.0f, 1.0f,    0.0f,   1.0f,   0.0f, 0.0f,
+            1.0f, 1.0f,0.0f,      0.0f,  0.0f, 1.0f,    1.0f,   1.0f,   0.0f, 0.0f,
+        };
+        unsigned int stride = (3 + 3 + 2 + 2) * sizeof(float);
+        indexShader.Bind();
+        VertexArray indexVa;
+        VertexBuffer indexVb(rectangleVertices, 4 * stride);
+
+        unsigned int indexIndices[] = {
+        0, 1, 2, 1, 3, 2};
+        IndexBuffer indexIndicesIb(indexIndices, 6);
+
+
+        VertexBufferLayout indexLayout;
+        // location 0
+        indexLayout.AddFloat(3);
+        indexLayout.AddFloat(3);
+        indexLayout.AddFloat(2);
+        indexLayout.AddFloat(2);
+
+        indexVa.AddBuffer(indexVb, indexLayout);
+
+        Index index(indexShader, view, projection);
+
 
         float cubeVertices[] =
         {   //Kocka
@@ -256,7 +285,7 @@ int main(void)
         -0.5f,  0.5f,  0.5f,  0.0f,  -1.0f,  0.0f, 0.0f, 100.0f,   0.0f, 10.0f,
         -0.5f,  0.5f, -0.5f,  0.0f,  -1.0f,  0.0f, 0.0f, 100.0f,   0.0f, 10.0f,
         };
-        unsigned int stride = (3 + 3 + 2 + 2) * sizeof(float);
+        stride = (3 + 3 + 2 + 2) * sizeof(float);
 
 
         // ROOM
@@ -817,6 +846,15 @@ int main(void)
             rampShader.SetUniform4f("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
             glm::mat4 unmovebleModel = ramp.getModel();
             renderer.Draw(rampVa, unmoveableRampIndicesIb, rampShader);
+
+            roomShader.Bind();
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture[2]);
+            roomShader.SetUniform1i("uDiffMap1", 0);
+            indexShader.SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
+            glDisable(GL_DEPTH_TEST);
+            renderer.Draw(indexVa, indexIndicesIb, indexShader);
+            glEnable(GL_DEPTH_TEST);
 
           
             if (rampEnabled) {
