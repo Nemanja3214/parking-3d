@@ -30,6 +30,7 @@
 #include "Spots.h"
 #include "Car.h"
 #include "Index.h"
+#include "Monitor.h"
 
 struct ParkingSpot {
     double startTime;
@@ -83,6 +84,7 @@ int main(void)
     Shader roomShader("texture.vert", "texture.frag");
     Shader indexShader("texture.vert", "texture.frag");
     Shader houseShader("texture.vert", "phong.frag");
+    Shader monitorShader("texture.vert", "phong.frag");
     Shader rampShader("basic.vert", "basic.frag");
     Shader manShader("model.vert", "model.frag");
     Shader carShader("model.vert", "modelWithoutTexture.frag");
@@ -549,6 +551,8 @@ int main(void)
         Model carModel("Models/carNew/LowPolyCars.obj");
         Car car(carShader, view, projection);
 
+        Monitor monitor(monitorShader, view, projection);
+
         spotShader.Bind();
         float spotVertices[] =
         {   //Kocka
@@ -598,7 +602,7 @@ int main(void)
 
         Spots spots(spotShader, view, projection);
 
-        Renderable scene[] = { room, house, ramp, man, spots, car};
+        Renderable scene[] = { room, house, ramp, man, spots, car, monitor};
         
 
         //ALPHA
@@ -804,7 +808,7 @@ int main(void)
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
 
-            for (int i = 0; i < 6; ++i) {
+            for (int i = 0; i < 7; ++i) {
                 scene[i].setView(view);
                 scene[i].setProjection(projection);
             }
@@ -836,10 +840,10 @@ int main(void)
             houseShader.SetUniform4f("u_Color", 167.0f/255, 199.0f/255, 203.0f/255, 0.5f);
             renderer.Draw(houseVa, windowIndicesIb, houseShader);
 
-            houseShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
+            monitorShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
             glm::mat4 tmp = house.getModel();
             house.setModel(glm::scale(house.getModel(), glm::vec3(1.0f, 0.5f, 1.0f)));
-            renderer.Draw(houseVa, monitorIndicesIb, houseShader);
+            renderer.Draw(houseVa, monitorIndicesIb, monitorShader);
             house.setModel(tmp);
 
         
