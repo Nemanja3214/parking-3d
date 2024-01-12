@@ -88,14 +88,14 @@ int main(void)
     Shader rampShader("texture.vert", "phongSpotlight.frag");
     Shader manShader("model.vert", "model.frag");
     Shader carShader("model.vert", "phongSpotlight.frag");
-    Shader spotShader("texture.vert", "phongSpotlight.frag");//
+    Shader spotShader("texture.vert", "phongSpotlight.frag");
 
-    Shader monitorSpotShader("basic.vert", "basic.frag");//
-    Shader monitorCarShader("basic.vert", "basic.frag");//
-    Shader monitorProgressOutlineShader("basic.vert", "basic.frag");//
+    Shader monitorSpotShader("basic.vert", "basic.frag");
+    Shader monitorCarShader("basic.vert", "basic.frag");
+    Shader monitorProgressOutlineShader("basic.vert", "basic.frag");
     Shader monitorNumberShader("texture.vert", "texture.frag");
-    Shader monitorSemaphoreShader("basic.vert", "basic.frag");//
-    Shader monitorProgressShader("progress.vert", "basic.frag");//
+    Shader monitorSemaphoreShader("basic.vert", "basic.frag");
+    Shader monitorProgressShader("progress.vert", "basic.frag");
 
     {
         Renderer renderer;
