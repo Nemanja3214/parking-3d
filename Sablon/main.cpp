@@ -96,7 +96,7 @@ int main(void)
     //Shader monitorNumberShader("basicWithTexture.vert", "basicWithTexture.frag");
     //Shader monitorBackgroundShader("basicWithTexture.vert", "basicWithTexture.frag");
     Shader monitorSemaphoreShader("basic.vert", "basic.frag");
-    //Shader monitorProgressShader("progress.vert", "semaphore.frag");
+    Shader monitorProgressShader("progress.vert", "basic.frag");
 
     {
         Renderer renderer;
@@ -733,7 +733,13 @@ int main(void)
             transformM = glm::translate(transformM, glm::vec3(0.0f, 1.0f, 0.0f));
             semaphoreResults[i] =  transformM;
 
-            transformM = transform(xOffset + 200, yOffset, 100.0f);
+            //transformM = transform(xOffset + 200, yOffset, 100.0f);
+            transformM = spotResults[i];
+            transformM = glm::rotate(transformM, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+            transformM = glm::scale(transformM, glm::vec3(0.03f, 0.03f, 0.03f));
+            transformM = glm::scale(transformM, glm::vec3(10.0f, 1.0f, 1.0f));
+        
+            transformM = glm::translate(transformM, glm::vec3(20.5f, -20.0f, 0.0f));
             progressResults[i] = transformM;
 
             transformM = transform(xOffset, yOffset + 80, 50.0f);
@@ -745,6 +751,8 @@ int main(void)
             //transformM = transform(0, 0, 6000.0f, false);
             //backgroundResult =  transformM;
         }
+        float progressWidth = 1.0, progressHeight = 0.1;
+        float min_x = -progressWidth / 2.0, max_x = progressWidth / 2.0;
         float progress = 0;
         for (int i = 0; i < 6; ++i) {
             parkingSpots[i] = {
@@ -987,23 +995,23 @@ int main(void)
                 //NUMBER
                 glUseProgram(numberShader);
                 glUniformMatrix4fv(uNumberMVP, 1, GL_FALSE, &(numberResults[i])[0][0]);
-
-                //BACKGROUND
-                //glUseProgram(backgroundShader);
-                //glUniformMatrix4fv(uBackgroundMVP, 1, GL_FALSE, &(backgroundResult)[0][0]);
                 */
                 //SEMAPHORE
                 monitorSemaphoreShader.SetUniform4fv("u_Color", taken ? glm::vec4(1.0, 0.0, 0.0, 1.0): glm::vec4(0.0, 1.0, 0.0, 1.0));
                 monitorSemaphoreShader.SetUniformMat4f("uM", semaphoreResults[i]);
                 monitorSemaphoreShader.SetUniformMat4f("uV", view);
                 monitorSemaphoreShader.SetUniformMat4f("uP", projection);
-                /*
+                
                 //PROGRESS
-                glUseProgram(progressShader);
-                glUniform1f(uProgressLoc, progress);
-                glUniform1f(uWidthLoc, progressWidth);
-                glUniformMatrix4fv(uProgressMVP, 1, GL_FALSE, &(progressResults[i])[0][0]);
+                monitorProgressShader.SetUniform1f("progress", progress);
+                monitorProgressShader.SetUniform1f("minX", min_x);
+                monitorProgressShader.SetUniform1f("width", progressWidth);
 
+                monitorProgressShader.SetUniform4fv("u_Color", glm::vec4(0.0, 1.0, 0.0, 1.0));
+                monitorProgressShader.SetUniformMat4f("uM", progressResults[i]);
+                monitorProgressShader.SetUniformMat4f("uV", view);
+                monitorProgressShader.SetUniformMat4f("uP", projection);
+                /*
                 //PROGRESS OUTLINE
                 glUseProgram(progressOutlineShader);
                 glUniformMatrix4fv(uProgressOutlineMVP, 1, GL_FALSE, &(progressResults[i])[0][0]);
@@ -1015,26 +1023,18 @@ int main(void)
                 glBindVertexArray(VAO[3]);
                 glDrawArrays(GL_TRIANGLE_STRIP, 0, sizeof(number) / (2 * sizeof(float)));*/
 
-                //spot
-                //glUseProgram(spotShader);
-                //glBindVertexArray(VAO[0]);
-
                 glEnable(GL_LINE_SMOOTH);
                 glLineWidth(5.0);
                 renderer.DrawLineStrip(monitorSpotVa, monitorSpotIndicesIb, monitorSpotShader);
                 glLineWidth(1.0);
 
                 if (taken)renderer.Draw(monitorCarVa, monitorCarIndicesIb, monitorCarShader);
+                
+                renderer.Draw(monitorCarVa, monitorCarIndicesIb, monitorProgressShader);
 
                 renderer.DrawFan(monitorSemaphoreVa,
                     0, sizeof(circle) / (2 * sizeof(float)), monitorSemaphoreShader);
-                //glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_INT, (void*)(0 * sizeof(unsigned int)));
                 /*
-                //semaphore
-                glUseProgram(semaphoreShader);
-                glBindVertexArray(VAO[1]);
-                glDrawArrays(GL_TRIANGLE_FAN, 0, sizeof(circle) / (2 * sizeof(float)));
-
                 //progress bar outline
                 glUseProgram(progressOutlineShader);
                 glBindVertexArray(VAO[2]);
