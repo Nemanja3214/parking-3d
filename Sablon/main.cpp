@@ -43,7 +43,7 @@ struct ParkingSpot {
 void takePlace(ParkingSpot spots[], int i, double now);
 void freePlace(ParkingSpot spots[], int i, double now);
 void resetPlace(ParkingSpot spots[], int i, double now);
-
+glm::mat4 transform(float xOffset, float yOffset, float scale);
 ParkingSpot parkingSpots[6];
 
 
@@ -89,6 +89,14 @@ int main(void)
     Shader manShader("model.vert", "model.frag");
     Shader carShader("model.vert", "modelWithoutTexture.frag");
     Shader spotShader("basic.vert", "basic.frag");
+
+    Shader monitorSpotShader("basic.vert", "basic.frag");
+    Shader monitorCarShader("basic.vert", "basic.frag");
+    //Shader monitorProgressOutlineShader("basic.vert", "spot.frag");
+    //Shader monitorNumberShader("basicWithTexture.vert", "basicWithTexture.frag");
+    //Shader monitorBackgroundShader("basicWithTexture.vert", "basicWithTexture.frag");
+    Shader monitorSemaphoreShader("basic.vert", "basic.frag");
+    //Shader monitorProgressShader("progress.vert", "semaphore.frag");
 
     {
         Renderer renderer;
@@ -239,6 +247,72 @@ int main(void)
         indexVa.AddBuffer(indexVb, indexLayout);
 
         Index index(indexShader, view, projection);
+
+        stride = (3 + 3 + 2 + 2) * sizeof(float);
+        monitorCarShader.Bind();
+        VertexArray monitorCarVa;
+        VertexBuffer monitorCarVb(rectangleVertices, 4 * stride);
+
+        unsigned int monitorCarIndices[] = {
+        0, 1, 2, 1, 3, 2 };
+        IndexBuffer monitorCarIndicesIb(monitorCarIndices, 6);
+
+
+        VertexBufferLayout monitorCarLayout;
+        // location 0
+        monitorCarLayout.AddFloat(3);
+        monitorCarLayout.AddFloat(3);
+        monitorCarLayout.AddFloat(2);
+        monitorCarLayout.AddFloat(2);
+
+        monitorCarVa.AddBuffer(monitorCarVb, monitorCarLayout);
+        monitorCarShader.Unbind();
+
+        stride = (3 + 3 + 2 + 2) * sizeof(float);
+        monitorSpotShader.Bind();
+        VertexArray monitorSpotVa;
+        VertexBuffer monitorSpotVb(rectangleVertices, 4 * stride);
+
+        unsigned int monitorSpotIndices[] = {
+        0,1, 3,2, 0};
+        IndexBuffer monitorSpotIndicesIb(monitorSpotIndices, 5);
+
+
+        VertexBufferLayout monitorSpotLayout;
+        // location 0
+        monitorSpotLayout.AddFloat(3);
+        monitorSpotLayout.AddFloat(3);
+        monitorSpotLayout.AddFloat(2);
+        monitorSpotLayout.AddFloat(2);
+
+        monitorSpotVa.AddBuffer(monitorSpotVb, monitorSpotLayout);
+        monitorSpotShader.Unbind();
+
+        float circle[CRES * 3 + 6]; // +4 je za x i y koordinate centra kruga, i za x i y od nultog ugla
+        float r = 0.2;
+
+        circle[0] = 0; //center x
+        circle[1] = 0; //center y
+        circle[2] = 0; //center z
+        int i;
+        for (i = 0; i <= CRES; i++)
+        {
+
+            circle[3 + 3 * i] = circle[0] + r * cos((3.141592 / 180) * (i * 360 / CRES)); //Xi
+            circle[3 + 3 * i + 1] = circle[1] + r * sin((3.141592 / 180) * (i * 360 / CRES)); //Yi
+            circle[3 + 3 * i + 2] = 0.0f; //Zi
+        }
+        stride = (3) * sizeof(float);
+        monitorSemaphoreShader.Bind();
+        VertexArray monitorSemaphoreVa;
+        VertexBuffer monitorSemaphoreVb(circle, ((CRES * 3 + 6) / 3) * stride);
+
+        VertexBufferLayout monitorSemaphoreLayout;
+        // location 0
+        monitorSemaphoreLayout.AddFloat(3);
+
+        monitorSemaphoreVa.AddBuffer(monitorSemaphoreVb, monitorSemaphoreLayout);
+        monitorSemaphoreShader.Unbind();
 
 
         float cubeVertices[] =
@@ -627,9 +701,59 @@ int main(void)
         const double targetFPS = 120.0;
         double lastTime = 0.0;
 
+        srand(time(0));
+
         bool isLighting = true;
         bool isLightbulbOn = true;
 
+        glm::mat4 transformM;
+        glm::mat4 spotResults[6], semaphoreResults[6],
+            progressResults[6], numberResults[6],
+            carResults[6],
+            backgroundResult, indexResult;
+        float const scale = 0.1f;
+        for (int i = 0; i < 6; ++i) {
+            float xOffset = (i % 3) * 2.0f + 0.7f;
+            float yOffset = i > 2 ? 4.7f : 0.5f;
+            xOffset = xOffset / 30.0f;
+            yOffset = yOffset / 30.0f;
+
+            transformM = glm::mat4(1.0f);
+            transformM = glm::rotate(transformM, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+            transformM = glm::translate(transformM, glm::vec3(yOffset, xOffset, 0.0f));
+            transformM = glm::translate(transformM, glm::vec3(-0.1f, -0.7f, 0.345f));
+            transformM = glm::scale(transformM, glm::vec3(0.03f, 0.03f, 0.03f));
+            transformM = glm::scale(transformM, glm::vec3(1.0f, 0.5f, 1.0f));
+            spotResults[i] = transformM;
+
+            carResults[i] = spotResults[i];
+
+            transformM = spotResults[i];
+            transformM = glm::scale(transformM, glm::vec3(1.0f, 2.0f, 1.0f));
+            transformM = glm::translate(transformM, glm::vec3(0.0f, 1.0f, 0.0f));
+            semaphoreResults[i] =  transformM;
+
+            transformM = transform(xOffset + 200, yOffset, 100.0f);
+            progressResults[i] = transformM;
+
+            transformM = transform(xOffset, yOffset + 80, 50.0f);
+            numberResults[i] =  transformM;
+
+            transformM = transform(xOffset, -200.0f, 300.0f);
+            indexResult = transformM;
+
+            //transformM = transform(0, 0, 6000.0f, false);
+            //backgroundResult =  transformM;
+        }
+        float progress = 0;
+        for (int i = 0; i < 6; ++i) {
+            parkingSpots[i] = {
+                0,
+                0,
+                glm::vec4(),
+                false
+            };
+        }
         int numberKeys[6] = { GLFW_KEY_1 , GLFW_KEY_2, GLFW_KEY_3, GLFW_KEY_4, GLFW_KEY_5, GLFW_KEY_6 };
         //glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA16F, wWidth, wHeight);
         while (!glfwWindowShouldClose(window))
@@ -841,10 +965,92 @@ int main(void)
             renderer.Draw(houseVa, windowIndicesIb, houseShader);
 
             monitorShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
-            glm::mat4 tmp = house.getModel();
-            house.setModel(glm::scale(house.getModel(), glm::vec3(1.0f, 0.5f, 1.0f)));
+            for (int i = 0; i < 6; ++i) {
+
+                parkingSpots[i].taken = parkingSpots[i].endTime > currentTime;
+                int taken = parkingSpots[i].taken;
+                progress = taken ? (currentTime - parkingSpots[i].startTime) / (parkingSpots[i].endTime - parkingSpots[i].startTime) : 0.0f;
+                // setting uniforms
+                //SPOT
+                monitorSpotShader.SetUniform4fv("u_Color", glm::vec4(-1.0));
+                monitorSpotShader.SetUniformMat4f("uM", spotResults[i]);
+                monitorSpotShader.SetUniformMat4f("uV", view);
+                monitorSpotShader.SetUniformMat4f("uP", projection);
+
+                //CAR
+                parkingSpots[i].color[3] = parkingSpots[i].numberVisible ? 0.5f : 1.0f;
+                monitorCarShader.SetUniform4fv("u_Color", parkingSpots[i].color);
+                monitorCarShader.SetUniformMat4f("uM", carResults[i]);
+                monitorCarShader.SetUniformMat4f("uV", view);
+                monitorCarShader.SetUniformMat4f("uP", projection);
+                /*
+                //NUMBER
+                glUseProgram(numberShader);
+                glUniformMatrix4fv(uNumberMVP, 1, GL_FALSE, &(numberResults[i])[0][0]);
+
+                //BACKGROUND
+                //glUseProgram(backgroundShader);
+                //glUniformMatrix4fv(uBackgroundMVP, 1, GL_FALSE, &(backgroundResult)[0][0]);
+                */
+                //SEMAPHORE
+                monitorSemaphoreShader.SetUniform4fv("u_Color", taken ? glm::vec4(1.0, 0.0, 0.0, 1.0): glm::vec4(0.0, 1.0, 0.0, 1.0));
+                monitorSemaphoreShader.SetUniformMat4f("uM", semaphoreResults[i]);
+                monitorSemaphoreShader.SetUniformMat4f("uV", view);
+                monitorSemaphoreShader.SetUniformMat4f("uP", projection);
+                /*
+                //PROGRESS
+                glUseProgram(progressShader);
+                glUniform1f(uProgressLoc, progress);
+                glUniform1f(uWidthLoc, progressWidth);
+                glUniformMatrix4fv(uProgressMVP, 1, GL_FALSE, &(progressResults[i])[0][0]);
+
+                //PROGRESS OUTLINE
+                glUseProgram(progressOutlineShader);
+                glUniformMatrix4fv(uProgressOutlineMVP, 1, GL_FALSE, &(progressResults[i])[0][0]);
+
+
+                //number
+                glUseProgram(numberShader);
+                glBindTexture(GL_TEXTURE_2D, texture[i]);
+                glBindVertexArray(VAO[3]);
+                glDrawArrays(GL_TRIANGLE_STRIP, 0, sizeof(number) / (2 * sizeof(float)));*/
+
+                //spot
+                //glUseProgram(spotShader);
+                //glBindVertexArray(VAO[0]);
+
+                glEnable(GL_LINE_SMOOTH);
+                glLineWidth(5.0);
+                renderer.DrawLineStrip(monitorSpotVa, monitorSpotIndicesIb, monitorSpotShader);
+                glLineWidth(1.0);
+
+                if (taken)renderer.Draw(monitorCarVa, monitorCarIndicesIb, monitorCarShader);
+
+                renderer.DrawFan(monitorSemaphoreVa,
+                    0, sizeof(circle) / (2 * sizeof(float)), monitorSemaphoreShader);
+                //glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_INT, (void*)(0 * sizeof(unsigned int)));
+                /*
+                //semaphore
+                glUseProgram(semaphoreShader);
+                glBindVertexArray(VAO[1]);
+                glDrawArrays(GL_TRIANGLE_FAN, 0, sizeof(circle) / (2 * sizeof(float)));
+
+                //progress bar outline
+                glUseProgram(progressOutlineShader);
+                glBindVertexArray(VAO[2]);
+                glDrawArrays(GL_LINE_LOOP, 0, 4);
+
+                //progress bar
+                glUseProgram(progressShader);
+                glBindVertexArray(VAO[2]);
+                glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_INT, (void*)(0 * sizeof(unsigned int)));
+
+                */
+
+                progress += 0.00001;
+
+            }
             renderer.Draw(houseVa, monitorIndicesIb, monitorShader);
-            house.setModel(tmp);
 
         
             rampShader.SetUniform4f("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
@@ -906,6 +1112,13 @@ int main(void)
         glfwTerminate();
         return 0;
     }
+}
+glm::mat4 transform(float xOffset, float yOffset, float scale) {
+    glm::mat4 translateM = glm::translate(glm::mat4(1.0f), glm::vec3(xOffset, yOffset, 0.0f));
+    glm::mat4 scaleM = glm::scale(glm::mat4(1.0f), glm::vec3(scale, scale, 0.0f));
+    glm::mat4 rotateM = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.f, 0.f, 1.f));
+    glm::mat4 modelM = translateM * rotateM * scaleM;
+    return modelM;
 }
 void takePlace(ParkingSpot spots[], int i, double now) {
     if (!spots[i].taken)
