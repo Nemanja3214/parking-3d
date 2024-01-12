@@ -87,7 +87,7 @@ int main(void)
     Shader monitorShader("texture.vert", "phong.frag");
     Shader rampShader("texture.vert", "phongSpotlight.frag");
     Shader manShader("model.vert", "model.frag");
-    Shader carShader("model.vert", "modelWithoutTexture.frag");
+    Shader carShader("model.vert", "phongSpotlight.frag");
     Shader spotShader("texture.vert", "phongSpotlight.frag");//
 
     Shader monitorSpotShader("basic.vert", "basic.frag");//
@@ -856,12 +856,14 @@ int main(void)
                     rampShader.SetUniform1i("uIsLight", 1);
                     roomShader.SetUniform1i("uIsLight", 1);
                     spotShader.SetUniform1i("uIsLight", 1);
+                    carShader.SetUniform1i("uIsLight", 1);
                 }
                 else {
                     houseShader.SetUniform1i("uIsLight", 0);
                     rampShader.SetUniform1i("uIsLight", 0);
                     roomShader.SetUniform1i("uIsLight", 0);
                     spotShader.SetUniform1i("uIsLight", 0);
+                    carShader.SetUniform1i("uIsLight", 0);
                 }
             }
 
@@ -964,7 +966,12 @@ int main(void)
             room.setCameras(cameraIncrement);
 
 
+            carShader.Bind();
+            carShader.SetUniform3f("uSpotlight1.pos", room.getCornerCameras()[3].position);
+            carShader.SetUniform3f("uSpotlight1.lightDir", room.getCornerCameras()[3].look);
 
+            carShader.SetUniform3f("uSpotlight2.pos", room.getCornerCameras()[1].position);
+            carShader.SetUniform3f("uSpotlight2.lightDir", room.getCornerCameras()[1].look);
 
 
             rampShader.Bind();
