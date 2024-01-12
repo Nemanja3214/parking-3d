@@ -85,23 +85,23 @@ int main(void)
     Shader indexShader("texture.vert", "texture.frag");
     Shader houseShader("texture.vert", "phong.frag");
     Shader monitorShader("texture.vert", "phong.frag");
-    Shader rampShader("basic.vert", "basic.frag");
+    Shader rampShader("texture.vert", "phongSpotlight.frag");/////////////
     Shader manShader("model.vert", "model.frag");
     Shader carShader("model.vert", "modelWithoutTexture.frag");
-    Shader spotShader("basic.vert", "basic.frag");
+    Shader spotShader("basic.vert", "basic.frag");//
 
-    Shader monitorSpotShader("basic.vert", "basic.frag");
-    Shader monitorCarShader("basic.vert", "basic.frag");
-    Shader monitorProgressOutlineShader("basic.vert", "basic.frag");
+    Shader monitorSpotShader("basic.vert", "basic.frag");//
+    Shader monitorCarShader("basic.vert", "basic.frag");//
+    Shader monitorProgressOutlineShader("basic.vert", "basic.frag");//
     Shader monitorNumberShader("texture.vert", "texture.frag");
-    Shader monitorSemaphoreShader("basic.vert", "basic.frag");
-    Shader monitorProgressShader("progress.vert", "basic.frag");
+    Shader monitorSemaphoreShader("basic.vert", "basic.frag");//
+    Shader monitorProgressShader("progress.vert", "basic.frag");//
 
     {
         Renderer renderer;
 
         glm::mat4 view = glm::mat4(1.0f);
-        view = glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glm::mat4 perspective = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
         glm::mat4 projection = glm::perspective(glm::radians(70.0f), (float)wWidth / (float)wHeight, 0.1f, 10.0f);
         glm::mat4 ortho = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 10.0f);
@@ -532,90 +532,90 @@ int main(void)
         {   //Kocka
             //Normale su potrebne za racun osvjetljenja.
         //X     Y      Z       NX    NY     NZ
-        -0.30f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.05f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.05f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.05f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.30f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.30f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.30f, -0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+         0.05f, -0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+         0.05f,  0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+         0.05f,  0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+        -0.30f,  0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
+        -0.30f, -0.5f, -0.5f,  0.0f,  0.0f, 1.0f,
 
-        -0.30f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.05f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.05f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.05f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.30f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.30f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.30f, -0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+         0.05f, -0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+         0.05f,  0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+         0.05f,  0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+        -0.30f,  0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
+        -0.30f, -0.5f,  0.5f,  0.0f,  0.0f, -1.0f,
 
-        -0.30f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.30f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.30f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.30f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.30f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.30f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.30f,  0.5f,  0.5f, 1.0f,  0.0f,  0.0f,
+        -0.30f,  0.5f, -0.5f, 1.0f,  0.0f,  0.0f,
+        -0.30f, -0.5f, -0.5f, 1.0f,  0.0f,  0.0f,
+        -0.30f, -0.5f, -0.5f, 1.0f,  0.0f,  0.0f,
+        -0.30f, -0.5f,  0.5f, 1.0f,  0.0f,  0.0f,
+        -0.30f,  0.5f,  0.5f, 1.0f,  0.0f,  0.0f,
 
-         0.05f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.05f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.05f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.05f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.05f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.05f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.05f,  0.5f,  0.5f,  -1.0f,  0.0f,  0.0f,
+         0.05f,  0.5f, -0.5f,  -1.0f,  0.0f,  0.0f,
+         0.05f, -0.5f, -0.5f,  -1.0f,  0.0f,  0.0f,
+         0.05f, -0.5f, -0.5f,  -1.0f,  0.0f,  0.0f,
+         0.05f, -0.5f,  0.5f,  -1.0f,  0.0f,  0.0f,
+         0.05f,  0.5f,  0.5f,  -1.0f,  0.0f,  0.0f,
 
-        -0.30f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.05f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.05f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-         0.05f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.30f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.30f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+        -0.30f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f,
+         0.05f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f,
+         0.05f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f,
+         0.05f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f,
+        -0.30f, -0.5f,  0.5f,  0.0f, 1.0f,  0.0f,
+        -0.30f, -0.5f, -0.5f,  0.0f, 1.0f,  0.0f,
 
-        -0.30f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.05f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.05f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-         0.05f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.30f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.30f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+        -0.30f,  0.5f, -0.5f,  0.0f,  -1.0f,  0.0f,
+         0.05f,  0.5f, -0.5f,  0.0f,  -1.0f,  0.0f,
+         0.05f,  0.5f,  0.5f,  0.0f,  -1.0f,  0.0f,
+         0.05f,  0.5f,  0.5f,  0.0f,  -1.0f,  0.0f,
+        -0.30f,  0.5f,  0.5f,  0.0f,  -1.0f,  0.0f,
+        -0.30f,  0.5f, -0.5f,  0.0f,  -1.0f,  0.0f,
 
         //moveable 
-        -0.45f, -0.25f, -0.25f,  0.0f,  0.0f, -1.0f,
-         0.85f, -0.25f, -0.25f,  0.0f,  0.0f, -1.0f,
-         0.85f,  0.25f, -0.25f,  0.0f,  0.0f, -1.0f,
-         0.85f,  0.25f, -0.25f,  0.0f,  0.0f, -1.0f,
-        -0.45f,  0.25f, -0.25f,  0.0f,  0.0f, -1.0f,
-        -0.45f, -0.25f, -0.25f,  0.0f,  0.0f, -1.0f,
+        -0.45f, -0.25f, -0.25f,  0.0f,  0.0f, 1.0f,
+         0.85f, -0.25f, -0.25f,  0.0f,  0.0f, 1.0f,
+         0.85f,  0.25f, -0.25f,  0.0f,  0.0f, 1.0f,
+         0.85f,  0.25f, -0.25f,  0.0f,  0.0f, 1.0f,
+        -0.45f,  0.25f, -0.25f,  0.0f,  0.0f, 1.0f,
+        -0.45f, -0.25f, -0.25f,  0.0f,  0.0f, 1.0f,
 
-        -0.45f, -0.25f,  0.25f,  0.0f,  0.0f, 1.0f,
-         0.85f, -0.25f,  0.25f,  0.0f,  0.0f, 1.0f,
-         0.85f,  0.25f,  0.25f,  0.0f,  0.0f, 1.0f,
-         0.85f,  0.25f,  0.25f,  0.0f,  0.0f, 1.0f,
-        -0.45f,  0.25f,  0.25f,  0.0f,  0.0f, 1.0f,
-        -0.45f, -0.25f,  0.25f,  0.0f,  0.0f, 1.0f,
+        -0.45f, -0.25f,  0.25f,  0.0f,  0.0f, -1.0f,
+         0.85f, -0.25f,  0.25f,  0.0f,  0.0f, -1.0f,
+         0.85f,  0.25f,  0.25f,  0.0f,  0.0f, -1.0f,
+         0.85f,  0.25f,  0.25f,  0.0f,  0.0f, -1.0f,
+        -0.45f,  0.25f,  0.25f,  0.0f,  0.0f, -1.0f,
+        -0.45f, -0.25f,  0.25f,  0.0f,  0.0f, -1.0f,
 
-        -0.45f,  0.25f,  0.25f, -1.0f,  0.0f,  0.0f,
-        -0.45f,  0.25f, -0.25f, -1.0f,  0.0f,  0.0f,
-        -0.45f, -0.25f, -0.25f, -1.0f,  0.0f,  0.0f,
-        -0.45f, -0.25f, -0.25f, -1.0f,  0.0f,  0.0f,
-        -0.45f, -0.25f,  0.25f, -1.0f,  0.0f,  0.0f,
-        -0.45f,  0.25f,  0.25f, -1.0f,  0.0f,  0.0f,
+        -0.45f,  0.25f,  0.25f, 1.0f,  0.0f,  0.0f,
+        -0.45f,  0.25f, -0.25f, 1.0f,  0.0f,  0.0f,
+        -0.45f, -0.25f, -0.25f, 1.0f,  0.0f,  0.0f,
+        -0.45f, -0.25f, -0.25f, 1.0f,  0.0f,  0.0f,
+        -0.45f, -0.25f,  0.25f, 1.0f,  0.0f,  0.0f,
+        -0.45f,  0.25f,  0.25f, 1.0f,  0.0f,  0.0f,
 
-         0.85f,  0.25f,  0.25f,  1.0f,  0.0f,  0.0f,
-         0.85f,  0.25f, -0.25f,  1.0f,  0.0f,  0.0f,
-         0.85f, -0.25f, -0.25f,  1.0f,  0.0f,  0.0f,
-         0.85f, -0.25f, -0.25f,  1.0f,  0.0f,  0.0f,
-         0.85f, -0.25f,  0.25f,  1.0f,  0.0f,  0.0f,
-         0.85f,  0.25f,  0.25f,  1.0f,  0.0f,  0.0f,
+         0.85f,  0.25f,  0.25f,  -1.0f,  0.0f,  0.0f,
+         0.85f,  0.25f, -0.25f,  -1.0f,  0.0f,  0.0f,
+         0.85f, -0.25f, -0.25f,  -1.0f,  0.0f,  0.0f,
+         0.85f, -0.25f, -0.25f,  -1.0f,  0.0f,  0.0f,
+         0.85f, -0.25f,  0.25f,  -1.0f,  0.0f,  0.0f,
+         0.85f,  0.25f,  0.25f,  -1.0f,  0.0f,  0.0f,
 
-        -0.45f, -0.25f, -0.25f,  0.0f, -1.0f,  0.0f,
-         0.85f, -0.25f, -0.25f,  0.0f, -1.0f,  0.0f,
-         0.85f, -0.25f,  0.25f,  0.0f, -1.0f,  0.0f,
-         0.85f, -0.25f,  0.25f,  0.0f, -1.0f,  0.0f,
-        -0.45f, -0.25f,  0.25f,  0.0f, -1.0f,  0.0f,
-        -0.45f, -0.25f, -0.25f,  0.0f, -1.0f,  0.0f,
+        -0.45f, -0.25f, -0.25f,  0.0f, 1.0f,  0.0f,
+         0.85f, -0.25f, -0.25f,  0.0f, 1.0f,  0.0f,
+         0.85f, -0.25f,  0.25f,  0.0f, 1.0f,  0.0f,
+         0.85f, -0.25f,  0.25f,  0.0f, 1.0f,  0.0f,
+        -0.45f, -0.25f,  0.25f,  0.0f, 1.0f,  0.0f,
+        -0.45f, -0.25f, -0.25f,  0.0f, 1.0f,  0.0f,
 
-        -0.45f,  0.25f, -0.25f,  0.0f,  1.0f,  0.0f,
-         0.85f,  0.25f, -0.25f,  0.0f,  1.0f,  0.0f,
-         0.85f,  0.25f,  0.25f,  0.0f,  1.0f,  0.0f,
-         0.85f,  0.25f,  0.25f,  0.0f,  1.0f,  0.0f,
-        -0.45f,  0.25f,  0.25f,  0.0f,  1.0f,  0.0f,
-        -0.45f,  0.25f, -0.25f,  0.0f,  1.0f,  0.0f,
+        -0.45f,  0.25f, -0.25f,  0.0f,  -1.0f,  0.0f,
+         0.85f,  0.25f, -0.25f,  0.0f,  -1.0f,  0.0f,
+         0.85f,  0.25f,  0.25f,  0.0f,  -1.0f,  0.0f,
+         0.85f,  0.25f,  0.25f,  0.0f,  -1.0f,  0.0f,
+        -0.45f,  0.25f,  0.25f,  0.0f,  -1.0f,  0.0f,
+        -0.45f,  0.25f, -0.25f,  0.0f,  -1.0f,  0.0f,
         };
 
         rampShader.Bind();
@@ -730,7 +730,7 @@ int main(void)
 
         srand(time(0));
 
-        bool isLighting = true;
+        bool isLighting = false;
         bool isLightbulbOn = true;
 
         glm::mat4 transformM;
@@ -852,10 +852,12 @@ int main(void)
                 isLighting = !isLighting;
                 if (isLighting) {
                     houseShader.SetUniform1i("uIsLight", 1);
+                    rampShader.SetUniform1i("uIsLight", 1);
                     roomShader.SetUniform1i("uIsLight", 1);
                 }
                 else {
                     houseShader.SetUniform1i("uIsLight", 0);
+                    rampShader.SetUniform1i("uIsLight", 0);
                     roomShader.SetUniform1i("uIsLight", 0);
                 }
             }
@@ -865,9 +867,11 @@ int main(void)
                 isLightbulbOn = !isLightbulbOn;
                 if (isLightbulbOn) {
                     houseShader.SetUniform1i("uIsLightbulbOn", 1);
+                    rampShader.SetUniform1i("uIsLightbulbOn", 1);
                 }
                 else {
                     houseShader.SetUniform1i("uIsLightbulbOn", 0);
+                    rampShader.SetUniform1i("uIsLightbulbOn", 0);
                 }
             }
             
@@ -954,6 +958,13 @@ int main(void)
             room.currentAngle += cameraIncrement;
             room.setCameras(cameraIncrement);
 
+
+            rampShader.Bind();
+            rampShader.SetUniform3f("uSpotlight1.pos", room.getCornerCameras()[3].position);
+            rampShader.SetUniform3f("uSpotlight1.lightDir", room.getCornerCameras()[3].look);
+
+            rampShader.SetUniform3f("uSpotlight2.pos", room.getCornerCameras()[1].position);
+            rampShader.SetUniform3f("uSpotlight2.lightDir", room.getCornerCameras()[1].look);
 
             roomShader.Bind();
             roomShader.SetUniform3f("uSpotlight1.pos", room.getCornerCameras()[3].position);

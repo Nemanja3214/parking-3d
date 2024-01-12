@@ -8,9 +8,9 @@ Index::Index(Shader& shader, glm::mat4 view, glm::mat4 projection)
     this->model = glm::mat4(1.0f);
     //model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
    
-    glm::vec3 translation = glm::vec3(-0.12f, -0.2f, 1.7f);
+    glm::vec3 translation = glm::vec3(-0.47f, -0.85f, 1.7f);
     model = glm::translate(model, translation);
-    model = glm::scale(model, glm::vec3(0.065f, 0.065f, 0.065f));
+    model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 
     shader.SetUniformMat4f("uM", model);
 
