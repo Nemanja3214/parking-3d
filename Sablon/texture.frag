@@ -11,7 +11,7 @@ in vec3 TexCoords; // direction vector representing a 3D texture coordinate
 
 
 uniform sampler2D uDiffMap1;
-uniform samplerCube cubemap; // cubemap texture sampler
+//uniform samplerCube cubemap; // cubemap texture sampler
 uniform sampler2D emission;
 
 uniform vec4 u_Color;

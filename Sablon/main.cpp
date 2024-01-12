@@ -93,8 +93,7 @@ int main(void)
     Shader monitorSpotShader("basic.vert", "basic.frag");
     Shader monitorCarShader("basic.vert", "basic.frag");
     Shader monitorProgressOutlineShader("basic.vert", "basic.frag");
-    //Shader monitorNumberShader("basicWithTexture.vert", "basicWithTexture.frag");
-    //Shader monitorBackgroundShader("basicWithTexture.vert", "basicWithTexture.frag");
+    Shader monitorNumberShader("texture.vert", "texture.frag");
     Shader monitorSemaphoreShader("basic.vert", "basic.frag");
     Shader monitorProgressShader("progress.vert", "basic.frag");
 
@@ -221,11 +220,41 @@ int main(void)
         GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
         GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 
+        unsigned int numberTexture[6];
+        glGenTextures(6, numberTexture);
+        for (int i = 0; i < 6; ++i) {
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, numberTexture[i]);
+            // set the texture wrapping/filtering options (on the currently bound texture object)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            //clamp to edge maybe
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            // load and generate the texture
+            int width, height, nrChannels;
+            stbi_set_flip_vertically_on_load(true);
+            std::string si = "Textures/" + std::to_string(i + 1) + ".png";
+            unsigned char* data = stbi_load(si.c_str(), &width, &height, &nrChannels, 0);
+            if (data)
+            {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
+            else
+            {
+                std::cout << "Failed to load texture" << std::endl;
+            }
+            stbi_image_free(data);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+
         float rectangleVertices[] = {
             -1.0f, -1.0f, 0.0f,   0.0f,  0.0f, 1.0f,    0.0f,   0.0f,   0.0f, 0.0f,
-            1.0f, -1.0f,0.0f,     0.0f,  0.0f, 1.0f,    1.0f,   0.0f,   0.0f, 0.0f,
-            -1.0f, 1.0f,0.0f,     0.0f,  0.0f, 1.0f,    0.0f,   1.0f,   0.0f, 0.0f,
-            1.0f, 1.0f,0.0f,      0.0f,  0.0f, 1.0f,    1.0f,   1.0f,   0.0f, 0.0f,
+            1.0f, -1.0f,0.0f,     0.0f,  0.0f, 1.0f,    1.0f,   0.0f,   1.0f, 0.0f,
+            -1.0f, 1.0f,0.0f,     0.0f,  0.0f, 1.0f,    0.0f,   1.0f,   0.0f, 1.0f,
+            1.0f, 1.0f,0.0f,      0.0f,  0.0f, 1.0f,    1.0f,   1.0f,   1.0f, 1.0f,
         };
         unsigned int stride = (3 + 3 + 2 + 2) * sizeof(float);
         indexShader.Bind();
@@ -688,8 +717,6 @@ int main(void)
         // CULLING
         //GLCall(glEnable(GL_CULL_FACE));
        // glCullFace(GL_BACK);
-        // WIREFRAME MODE
-       //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         bool isPolygon = false;
 
@@ -742,14 +769,12 @@ int main(void)
             transformM = glm::translate(transformM, glm::vec3(3.5f, -10.0f, 0.0f));
             progressResults[i] = transformM;
 
-            transformM = transform(xOffset, yOffset + 80, 50.0f);
+            transformM = spotResults[i];
+            transformM = glm::rotate(transformM, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+            transformM = glm::translate(transformM, glm::vec3(0.0f, 0.0f, -0.001f));
+            //transformM = glm::scale(transformM, glm::vec3(0.6f, 0.6f, 0.6f));
             numberResults[i] =  transformM;
 
-            transformM = transform(xOffset, -200.0f, 300.0f);
-            indexResult = transformM;
-
-            //transformM = transform(0, 0, 6000.0f, false);
-            //backgroundResult =  transformM;
         }
         float progressWidth = 1.0, progressHeight = 0.1;
         float min_x = -progressWidth / 2.0, max_x = progressWidth / 2.0;
@@ -929,6 +954,7 @@ int main(void)
             room.currentAngle += cameraIncrement;
             room.setCameras(cameraIncrement);
 
+
             roomShader.Bind();
             roomShader.SetUniform3f("uSpotlight1.pos", room.getCornerCameras()[3].position);
             roomShader.SetUniform3f("uSpotlight1.lightDir", room.getCornerCameras()[3].look);
@@ -966,99 +992,12 @@ int main(void)
             //glDepthMask(GL_TRUE);
 
 
-            houseShader.SetUniform4f("u_Color", 0.1f, 0.2f, 0.8f, 1.0f);
-            renderer.Draw(houseVa, withoutWindowIndicesIb, houseShader);
-
-            houseShader.SetUniform4f("u_Color", 167.0f/255, 199.0f/255, 203.0f/255, 0.5f);
-            renderer.Draw(houseVa, windowIndicesIb, houseShader);
-
-            monitorShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
-            for (int i = 0; i < 6; ++i) {
-
-                parkingSpots[i].taken = parkingSpots[i].endTime > currentTime;
-                int taken = parkingSpots[i].taken;
-                progress = taken ? (currentTime - parkingSpots[i].startTime) / (parkingSpots[i].endTime - parkingSpots[i].startTime) : 0.0f;
-                // setting uniforms
-                //SPOT
-                monitorSpotShader.SetUniform4fv("u_Color", glm::vec4(-1.0));
-                monitorSpotShader.SetUniformMat4f("uM", spotResults[i]);
-                monitorSpotShader.SetUniformMat4f("uV", view);
-                monitorSpotShader.SetUniformMat4f("uP", projection);
-
-                //CAR
-                parkingSpots[i].color[3] = parkingSpots[i].numberVisible ? 0.5f : 1.0f;
-                monitorCarShader.SetUniform4fv("u_Color", parkingSpots[i].color);
-                monitorCarShader.SetUniformMat4f("uM", carResults[i]);
-                monitorCarShader.SetUniformMat4f("uV", view);
-                monitorCarShader.SetUniformMat4f("uP", projection);
-                /*
-                //NUMBER
-                glUseProgram(numberShader);
-                glUniformMatrix4fv(uNumberMVP, 1, GL_FALSE, &(numberResults[i])[0][0]);
-                */
-                //SEMAPHORE
-                monitorSemaphoreShader.SetUniform4fv("u_Color", taken ? glm::vec4(1.0, 0.0, 0.0, 1.0): glm::vec4(0.0, 1.0, 0.0, 1.0));
-                monitorSemaphoreShader.SetUniformMat4f("uM", semaphoreResults[i]);
-                monitorSemaphoreShader.SetUniformMat4f("uV", view);
-                monitorSemaphoreShader.SetUniformMat4f("uP", projection);
-                
-                //PROGRESS
-                monitorProgressShader.SetUniform1f("progress", progress);
-                monitorProgressShader.SetUniform1f("minX", min_x);
-                monitorProgressShader.SetUniform1f("width", progressWidth);
-
-                monitorProgressShader.SetUniform4fv("u_Color", glm::vec4(0.0, 1.0, 0.0, 1.0));
-                monitorProgressShader.SetUniformMat4f("uM", progressResults[i]);
-                monitorProgressShader.SetUniformMat4f("uV", view);
-                monitorProgressShader.SetUniformMat4f("uP", projection);
-                
-                //PROGRESS OUTLINE
-                monitorProgressOutlineShader.SetUniform4fv("u_Color", glm::vec4(0.0, 0.0, 0.0, 1.0));
-                monitorProgressOutlineShader.SetUniformMat4f("uM", progressResults[i]);
-                monitorProgressOutlineShader.SetUniformMat4f("uV", view);
-                monitorProgressOutlineShader.SetUniformMat4f("uP", projection);
-                /*
-
-                //number
-                glUseProgram(numberShader);
-                glBindTexture(GL_TEXTURE_2D, texture[i]);
-                glBindVertexArray(VAO[3]);
-                glDrawArrays(GL_TRIANGLE_STRIP, 0, sizeof(number) / (2 * sizeof(float)));*/
-
-                glEnable(GL_LINE_SMOOTH);
-                glLineWidth(5.0);
-                renderer.DrawLineStrip(monitorSpotVa, monitorSpotIndicesIb, monitorSpotShader);
-                glLineWidth(1.0);
-
-                if (taken)renderer.Draw(monitorCarVa, monitorCarIndicesIb, monitorCarShader);
-                
-                renderer.Draw(monitorCarVa, monitorCarIndicesIb, monitorProgressShader);
-
-                renderer.DrawFan(monitorSemaphoreVa,
-                    0, sizeof(circle) / (2 * sizeof(float)), monitorSemaphoreShader);
-                
-                //progress bar outline
-                renderer.DrawLineStrip(monitorSpotVa, monitorSpotIndicesIb, monitorProgressOutlineShader);
-
-                progress += 0.00001;
-
-            }
-            renderer.Draw(houseVa, monitorIndicesIb, monitorShader);
-
         
             rampShader.SetUniform4f("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
             glm::mat4 unmovebleModel = ramp.getModel();
             renderer.Draw(rampVa, unmoveableRampIndicesIb, rampShader);
 
-            roomShader.Bind();
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture[2]);
-            roomShader.SetUniform1i("uDiffMap1", 0);
-            indexShader.SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
-            glDisable(GL_DEPTH_TEST);
-            renderer.Draw(indexVa, indexIndicesIb, indexShader);
-            glEnable(GL_DEPTH_TEST);
-
+     
           
             if (rampEnabled) {
                 if (ramp.rampAngle >= 80.0f)
@@ -1095,7 +1034,106 @@ int main(void)
                     carModel.Draw(carShader);
                 }
             }
+
+
+
+            houseShader.SetUniform4f("u_Color", 0.1f, 0.2f, 0.8f, 1.0f);
+            renderer.Draw(houseVa, withoutWindowIndicesIb, houseShader);
+
+            renderer.Draw(houseVa, monitorIndicesIb, monitorShader);
+
+            monitorShader.SetUniform4f("u_Color", 1.0f, 1.0f, 1.0f, 1.0f);
+            for (int i = 0; i < 6; ++i) {
+
+                parkingSpots[i].taken = parkingSpots[i].endTime > currentTime;
+                int taken = parkingSpots[i].taken;
+                progress = taken ? (currentTime - parkingSpots[i].startTime) / (parkingSpots[i].endTime - parkingSpots[i].startTime) : 0.0f;
+                // setting uniforms
+                //SPOT
+                monitorSpotShader.SetUniform4fv("u_Color", glm::vec4(-1.0));
+                monitorSpotShader.SetUniformMat4f("uM", spotResults[i]);
+                monitorSpotShader.SetUniformMat4f("uV", view);
+                monitorSpotShader.SetUniformMat4f("uP", projection);
+
+                //CAR
+                parkingSpots[i].color[3] = parkingSpots[i].numberVisible ? 0.5f : 1.0f;
+                monitorCarShader.SetUniform4fv("u_Color", parkingSpots[i].color);
+                monitorCarShader.SetUniformMat4f("uM", carResults[i]);
+                monitorCarShader.SetUniformMat4f("uV", view);
+                monitorCarShader.SetUniformMat4f("uP", projection);
+
+
+                //NUMBER
+                monitorNumberShader.SetUniformMat4f("uM", numberResults[i]);
+                monitorNumberShader.SetUniformMat4f("uV", view);
+                monitorNumberShader.SetUniformMat4f("uP", projection);
+
+                //SEMAPHORE
+                monitorSemaphoreShader.SetUniform4fv("u_Color", taken ? glm::vec4(1.0, 0.0, 0.0, 1.0) : glm::vec4(0.0, 1.0, 0.0, 1.0));
+                monitorSemaphoreShader.SetUniformMat4f("uM", semaphoreResults[i]);
+                monitorSemaphoreShader.SetUniformMat4f("uV", view);
+                monitorSemaphoreShader.SetUniformMat4f("uP", projection);
+
+                //PROGRESS
+                monitorProgressShader.SetUniform1f("progress", progress);
+                monitorProgressShader.SetUniform1f("minX", min_x);
+                monitorProgressShader.SetUniform1f("width", progressWidth);
+
+                monitorProgressShader.SetUniform4fv("u_Color", glm::vec4(0.0, 1.0, 0.0, 1.0));
+                monitorProgressShader.SetUniformMat4f("uM", progressResults[i]);
+                monitorProgressShader.SetUniformMat4f("uV", view);
+                monitorProgressShader.SetUniformMat4f("uP", projection);
+
+                //PROGRESS OUTLINE
+                monitorProgressOutlineShader.SetUniform4fv("u_Color", glm::vec4(0.0, 0.0, 0.0, 1.0));
+                monitorProgressOutlineShader.SetUniformMat4f("uM", progressResults[i]);
+                monitorProgressOutlineShader.SetUniformMat4f("uV", view);
+                monitorProgressOutlineShader.SetUniformMat4f("uP", projection);
+
+
+                monitorNumberShader.Bind();
+                monitorNumberShader.SetUniform1i("uIsLight", 0);
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, numberTexture[i]);
+                monitorNumberShader.SetUniform1i("uDiffMap1", 0);
+                monitorNumberShader.SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
+                renderer.Draw(monitorCarVa, monitorCarIndicesIb, monitorNumberShader);
+                //glBindVertexArray(VAO[3]);
+                //glDrawArrays(GL_TRIANGLE_STRIP, 0, sizeof(number) / (2 * sizeof(float)));
+
+
+                glEnable(GL_LINE_SMOOTH);
+                glLineWidth(5.0);
+                renderer.DrawLineStrip(monitorSpotVa, monitorSpotIndicesIb, monitorSpotShader);
+                glLineWidth(1.0);
+
+                if (taken)renderer.Draw(monitorCarVa, monitorCarIndicesIb, monitorCarShader);
+
+                renderer.Draw(monitorCarVa, monitorCarIndicesIb, monitorProgressShader);
+
+                renderer.DrawFan(monitorSemaphoreVa,
+                    0, sizeof(circle) / (2 * sizeof(float)), monitorSemaphoreShader);
+
+                //progress bar outline
+                renderer.DrawLineStrip(monitorSpotVa, monitorSpotIndicesIb, monitorProgressOutlineShader);
+
+                progress += 0.00001;
+
+            }
+        
             
+            houseShader.SetUniform4f("u_Color", 167.0f / 255, 199.0f / 255, 203.0f / 255, 0.5f);
+            renderer.Draw(houseVa, windowIndicesIb, houseShader);
+
+            roomShader.Bind();
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture[2]);
+            roomShader.SetUniform1i("uDiffMap1", 0);
+            indexShader.SetUniform4f("u_Color", 0.0f, 0.0f, 0.0f, 1.0f);
+            glDisable(GL_DEPTH_TEST);
+            renderer.Draw(indexVa, indexIndicesIb, indexShader);
+            glEnable(GL_DEPTH_TEST);
+
 
             lastTime = glfwGetTime();
             glfwSwapBuffers(window);
