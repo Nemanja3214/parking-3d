@@ -92,7 +92,7 @@ int main(void)
 
     Shader monitorSpotShader("basic.vert", "basic.frag");
     Shader monitorCarShader("basic.vert", "basic.frag");
-    //Shader monitorProgressOutlineShader("basic.vert", "spot.frag");
+    Shader monitorProgressOutlineShader("basic.vert", "basic.frag");
     //Shader monitorNumberShader("basicWithTexture.vert", "basicWithTexture.frag");
     //Shader monitorBackgroundShader("basicWithTexture.vert", "basicWithTexture.frag");
     Shader monitorSemaphoreShader("basic.vert", "basic.frag");
@@ -736,10 +736,10 @@ int main(void)
             //transformM = transform(xOffset + 200, yOffset, 100.0f);
             transformM = spotResults[i];
             transformM = glm::rotate(transformM, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-            transformM = glm::scale(transformM, glm::vec3(0.03f, 0.03f, 0.03f));
+            transformM = glm::scale(transformM, glm::vec3(0.06f, 0.06f, 0.06f));
             transformM = glm::scale(transformM, glm::vec3(10.0f, 1.0f, 1.0f));
         
-            transformM = glm::translate(transformM, glm::vec3(20.5f, -20.0f, 0.0f));
+            transformM = glm::translate(transformM, glm::vec3(3.5f, -10.0f, 0.0f));
             progressResults[i] = transformM;
 
             transformM = transform(xOffset, yOffset + 80, 50.0f);
@@ -1011,11 +1011,13 @@ int main(void)
                 monitorProgressShader.SetUniformMat4f("uM", progressResults[i]);
                 monitorProgressShader.SetUniformMat4f("uV", view);
                 monitorProgressShader.SetUniformMat4f("uP", projection);
-                /*
+                
                 //PROGRESS OUTLINE
-                glUseProgram(progressOutlineShader);
-                glUniformMatrix4fv(uProgressOutlineMVP, 1, GL_FALSE, &(progressResults[i])[0][0]);
-
+                monitorProgressOutlineShader.SetUniform4fv("u_Color", glm::vec4(0.0, 0.0, 0.0, 1.0));
+                monitorProgressOutlineShader.SetUniformMat4f("uM", progressResults[i]);
+                monitorProgressOutlineShader.SetUniformMat4f("uV", view);
+                monitorProgressOutlineShader.SetUniformMat4f("uP", projection);
+                /*
 
                 //number
                 glUseProgram(numberShader);
@@ -1034,18 +1036,9 @@ int main(void)
 
                 renderer.DrawFan(monitorSemaphoreVa,
                     0, sizeof(circle) / (2 * sizeof(float)), monitorSemaphoreShader);
-                /*
+                
                 //progress bar outline
-                glUseProgram(progressOutlineShader);
-                glBindVertexArray(VAO[2]);
-                glDrawArrays(GL_LINE_LOOP, 0, 4);
-
-                //progress bar
-                glUseProgram(progressShader);
-                glBindVertexArray(VAO[2]);
-                glDrawElements(GL_TRIANGLE_STRIP, 6, GL_UNSIGNED_INT, (void*)(0 * sizeof(unsigned int)));
-
-                */
+                renderer.DrawLineStrip(monitorSpotVa, monitorSpotIndicesIb, monitorProgressOutlineShader);
 
                 progress += 0.00001;
 
