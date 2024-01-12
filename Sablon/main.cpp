@@ -85,10 +85,10 @@ int main(void)
     Shader indexShader("texture.vert", "texture.frag");
     Shader houseShader("texture.vert", "phong.frag");
     Shader monitorShader("texture.vert", "phong.frag");
-    Shader rampShader("texture.vert", "phongSpotlight.frag");/////////////
+    Shader rampShader("texture.vert", "phongSpotlight.frag");
     Shader manShader("model.vert", "model.frag");
     Shader carShader("model.vert", "modelWithoutTexture.frag");
-    Shader spotShader("basic.vert", "basic.frag");//
+    Shader spotShader("texture.vert", "phongSpotlight.frag");//
 
     Shader monitorSpotShader("basic.vert", "basic.frag");//
     Shader monitorCarShader("basic.vert", "basic.frag");//
@@ -661,16 +661,16 @@ int main(void)
         {   //Kocka
             //Normale su potrebne za racun osvjetljenja.
         //X     Y      Z       NX    NY     NZ
-        -0.5f, -0.5f, 0.0f,  0.0f,  1.0f,  0.0f,
-         0.5f, -0.5f, 0.0f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,0.0f, 0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, 0.0f,  0.0f,  1.0f,  0.0f,
+        -0.5f, -0.5f, 0.0f,  0.0f,  0.0f,  1.0f,
+         0.5f, -0.5f, 0.0f,  0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f,0.0f, 0.0f,  0.0f,  1.0f,
+        -0.5f,  0.5f, 0.0f,  0.0f,  0.0f,  1.0f,
 
         //inner part
-         -0.25f, -0.25f, 0.0f,  0.0f,  1.0f,  0.0f,
-         0.25f, -0.25f, 0.0f,  0.0f,  1.0f,  0.0f,
-         0.25f,  0.25f,0.0f, 0.0f,  1.0f,  0.0f,
-        -0.25f,  0.25f, 0.0f,  0.0f,  1.0f,  0.0f,
+         -0.25f, -0.25f, 0.0f,  0.0f,  0.0f,  1.0f,
+         0.25f, -0.25f, 0.0f,  0.0f,  0.0f,  1.0f,
+         0.25f,  0.25f,0.0f, 0.0f,  0.0f,  1.0f,
+        -0.25f,  0.25f, 0.0f,  0.0f,  0.0f,  1.0f,
 
         };
         stride = (3 + 3) * sizeof(float);
@@ -701,9 +701,10 @@ int main(void)
         spotLayout.AddFloat(3);
 
         spotVa.AddBuffer(spotVb, spotLayout);
-        spotShader.Unbind();
+    
 
         Spots spots(spotShader, view, projection);
+        spotShader.Unbind();
 
         Renderable scene[] = { room, house, ramp, man, spots, car, monitor};
         
@@ -854,11 +855,13 @@ int main(void)
                     houseShader.SetUniform1i("uIsLight", 1);
                     rampShader.SetUniform1i("uIsLight", 1);
                     roomShader.SetUniform1i("uIsLight", 1);
+                    spotShader.SetUniform1i("uIsLight", 1);
                 }
                 else {
                     houseShader.SetUniform1i("uIsLight", 0);
                     rampShader.SetUniform1i("uIsLight", 0);
                     roomShader.SetUniform1i("uIsLight", 0);
+                    spotShader.SetUniform1i("uIsLight", 0);
                 }
             }
 
@@ -867,11 +870,13 @@ int main(void)
                 isLightbulbOn = !isLightbulbOn;
                 if (isLightbulbOn) {
                     houseShader.SetUniform1i("uIsLightbulbOn", 1);
-                    rampShader.SetUniform1i("uIsLightbulbOn", 1);
+                   // rampShader.SetUniform1i("uIsLightbulbOn", 1);
+                   // spotShader.SetUniform1i("uIsLightbulbOn", 1);
                 }
                 else {
                     houseShader.SetUniform1i("uIsLightbulbOn", 0);
-                    rampShader.SetUniform1i("uIsLightbulbOn", 0);
+                   // rampShader.SetUniform1i("uIsLightbulbOn", 0);
+                    //spotShader.SetUniform1i("uIsLightbulbOn", 0);
                 }
             }
             
@@ -959,6 +964,9 @@ int main(void)
             room.setCameras(cameraIncrement);
 
 
+
+
+
             rampShader.Bind();
             rampShader.SetUniform3f("uSpotlight1.pos", room.getCornerCameras()[3].position);
             rampShader.SetUniform3f("uSpotlight1.lightDir", room.getCornerCameras()[3].look);
@@ -972,6 +980,14 @@ int main(void)
 
             roomShader.SetUniform3f("uSpotlight2.pos", room.getCornerCameras()[1].position);
             roomShader.SetUniform3f("uSpotlight2.lightDir", room.getCornerCameras()[1].look);
+
+            spotShader.Bind();
+            spotShader.SetUniform3f("uSpotlight1.pos", room.getCornerCameras()[3].position);
+            spotShader.SetUniform3f("uSpotlight1.lightDir", room.getCornerCameras()[3].look);
+
+            spotShader.SetUniform3f("uSpotlight2.pos", room.getCornerCameras()[1].position);
+            spotShader.SetUniform3f("uSpotlight2.lightDir", room.getCornerCameras()[1].look);
+
             if (room.currentCornerCameraIndex != -1) {
                 Camera camera = room.getCornerCameras()[room.currentCornerCameraIndex];
                 view = glm::lookAt(camera.position, camera.look, camera.up);

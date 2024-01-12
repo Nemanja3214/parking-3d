@@ -12,7 +12,6 @@ in vec3 TexCoords; // direction vector representing a 3D texture coordinate
 uniform vec4 u_Color;
 
 uniform int uIsLight;
-uniform int uIsEmission;
 
 
 struct Light{ //Svjetlosni izvor
@@ -49,6 +48,12 @@ vec3 resA = l.kA * uMaterial.kA;
 
 	vec3 viewDirection = normalize(uViewPos - chFragPos);
 	vec3 reflectionDirection = reflect(-lightToFrag, normal);
+    
+	// Blin  Phong
+	//vec3 halfwayDir = normalize(lightToFrag + viewDirection);  
+    //float s = pow(max(dot(normal, halfwayDir), 0.0), uMaterial.shine);
+    
+	// Phong
 	float s = pow(max(dot(viewDirection, reflectionDirection), 0.0), uMaterial.shine);
 	vec3 resS = l.kS * (s * uMaterial.kS);
 

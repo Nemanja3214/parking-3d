@@ -6,8 +6,6 @@ Ramp::Ramp(Shader& shader, glm::mat4 view, glm::mat4 projection)
 {
     shader.Bind();
 
-    shader.SetUniform1i("uIsEmission", 0);
-
     // spotlight 1
     shader.SetUniform1f("uSpotlight1.constant", 2.1f);
     shader.SetUniform1f("uSpotlight1.linear", 0.0f);
