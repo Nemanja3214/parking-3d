@@ -716,8 +716,8 @@ int main(void)
         GLCall(glEnable(GL_DEPTH_TEST));
         glDepthFunc(GL_LESS);
         // CULLING
-        //GLCall(glEnable(GL_CULL_FACE));
-       // glCullFace(GL_BACK);
+        GLCall(glEnable(GL_CULL_FACE));
+        glCullFace(GL_BACK);
 
         bool isPolygon = false;
 

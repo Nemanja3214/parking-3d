@@ -48,9 +48,15 @@ Car::Car(Shader& shader, glm::mat4 view, glm::mat4 projection)
     this->projection = projection;
     shader.SetUniformMat4f("uP", projection);
 
+
+
+
+
+
 }
 
 std::vector<glm::mat4> Car::getModels()
 {
+
     return models;
 }

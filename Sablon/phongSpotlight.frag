@@ -77,7 +77,7 @@ vec3 resA = l.kA * uMaterial.kA;
 void main()
 {    
 	vec3 light = getLight(uSpotlight1) + getLight(uSpotlight2);
-	vec3 phong = (light[0] + light[1] + light[2]) * vec3(u_Color);
+	vec3 phong = light * vec3(u_Color);
 	FragColor = uIsLight == 1 ? vec4(phong, u_Color[3]) : u_Color;
 }
 

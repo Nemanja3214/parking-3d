@@ -94,7 +94,7 @@ void Room::setCameras(float direction) {
 
 std::vector<Camera> Room::getCornerCameras()
 {
-
+    GLCall(glDisable(GL_CULL_FACE));
     return this->cornerCameras;
 }
 
