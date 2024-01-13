@@ -31,6 +31,7 @@
 #include "Car.h"
 #include "Index.h"
 #include "Monitor.h"
+#include "Cameras.h"
 
 struct ParkingSpot {
     double startTime;
@@ -82,6 +83,7 @@ int main(void)
     }
     //shaders and finding uniforms
     Shader roomShader("texture.vert", "texture.frag");
+    Shader camerasShader("texture.vert", "phongSpotlight.frag");
     Shader indexShader("texture.vert", "texture.frag");
     Shader houseShader("texture.vert", "phong.frag");
     Shader monitorShader("texture.vert", "phong.frag");
@@ -642,6 +644,27 @@ int main(void)
 
         rampVa.AddBuffer(rampVb, rampLayout);
 
+        /////////////////
+        camerasShader.Bind();
+        VertexArray camerasVa;
+        VertexBuffer camerasVb(rampVertices, 36 * stride);
+
+        unsigned int camerasIndices[36];
+        for (unsigned int i = 0; i < 36; ++i) {
+            camerasIndices[i] = i;
+        }
+        IndexBuffer camerasIndicesIb(camerasIndices, 36);
+
+        VertexBufferLayout camerasLayout;
+        // location 0
+        camerasLayout.AddFloat(3);
+        //location 1
+        camerasLayout.AddFloat(3);
+
+        camerasVa.AddBuffer(camerasVb, camerasLayout);
+
+        ///////////////
+
         Ramp ramp(rampShader, view, projection);
         ramp.rampAngle = 0.0f;
         float increment = 0.1f;
@@ -706,7 +729,9 @@ int main(void)
         Spots spots(spotShader, view, projection);
         spotShader.Unbind();
 
-        Renderable scene[] = { room, house, ramp, man, spots, car, monitor};
+        Cameras cameras(camerasShader, view, projection, room.getCornerCameras());
+
+        Renderable scene[] = { room, house, ramp, man, spots, car, monitor, cameras};
         
 
         //ALPHA
@@ -858,6 +883,7 @@ int main(void)
                     spotShader.SetUniform1i("uIsLight", 1);
                     carShader.SetUniform1i("uIsLight", 1);
                     manShader.SetUniform1i("uIsLight", 1);
+                    camerasShader.SetUniform1i("uIsLight", 1);
                 }
                 else {
                     houseShader.SetUniform1i("uIsLight", 0);
@@ -866,6 +892,7 @@ int main(void)
                     spotShader.SetUniform1i("uIsLight", 0);
                     carShader.SetUniform1i("uIsLight", 0);
                     manShader.SetUniform1i("uIsLight", 0);
+                    camerasShader.SetUniform1i("uIsLight", 0);
                 }
             }
 
@@ -968,7 +995,10 @@ int main(void)
             }
             room.currentAngle += cameraIncrement;
             room.setCameras(cameraIncrement);
+            cameras.setCameras(cameraIncrement);
 
+           
+        
 
             carShader.Bind();
             carShader.SetUniform3f("uSpotlight1.pos", room.getCornerCameras()[3].position);
@@ -1004,7 +1034,7 @@ int main(void)
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
 
-            for (int i = 0; i < 7; ++i) {
+            for (int i = 0; i < 8; ++i) {
                 scene[i].setView(view);
                 scene[i].setProjection(projection);
             }
@@ -1061,6 +1091,13 @@ int main(void)
             for (glm::mat4 model : spots.getModels()) {
                 spotShader.SetUniformMat4f("uM", model);
                 renderer.Draw(spotVa, spotIndicesIb, spotShader);
+            }
+
+            camerasShader.SetUniform4f("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
+            for (glm::mat4 model : cameras.getModels()) {
+                camerasShader.SetUniformMat4f("uM", model);
+
+                renderer.Draw(camerasVa, camerasIndicesIb, camerasShader);
             }
 
             for (int i = 0; i < 6; ++i) {

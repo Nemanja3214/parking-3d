@@ -46,10 +46,10 @@ Room::Room(Shader& shader, glm::mat4 view, glm::mat4 projection)
     this->projection = projection;
     shader.SetUniformMat4f("uP", projection);
 
-    glm::vec4 cameraPos1 = glm::vec4(-0.5f, 0.5f, 0.5f, 1.0f);
-    glm::vec4 cameraPos2 = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
-    glm::vec4 cameraPos3 = glm::vec4(0.5f, 0.5f, -0.5f, 1.0f);
-    glm::vec4 cameraPos4 = glm::vec4(-0.5f, 0.5f, -0.5f, 1.0f);
+    glm::vec4 cameraPos1 = glm::vec4(-0.6f, 0.6f, 0.6f, 1.0f);
+    glm::vec4 cameraPos2 = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
+    glm::vec4 cameraPos3 = glm::vec4(0.6f, 0.6f, -0.6f, 1.0f);
+    glm::vec4 cameraPos4 = glm::vec4(-0.6f, 0.6f,-0.6f, 1.0f);
     std::vector<glm::vec4> camerasPositions = { cameraPos1, cameraPos2, cameraPos3, cameraPos4 };
     for (glm::vec4 position : camerasPositions) {
         position = model * position;
