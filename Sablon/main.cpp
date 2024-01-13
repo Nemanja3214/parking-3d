@@ -32,6 +32,7 @@
 #include "Index.h"
 #include "Monitor.h"
 #include "Cameras.h"
+#include "Lightbulb.h"
 
 struct ParkingSpot {
     double startTime;
@@ -89,6 +90,7 @@ int main(void)
     Shader monitorShader("texture.vert", "phong.frag");
     Shader rampShader("texture.vert", "phongSpotlight.frag");
     Shader manShader("model.vert", "phong.frag");
+    Shader lightbulbShader("model.vert", "phong.frag");
     Shader carShader("model.vert", "phongSpotlight.frag");
     Shader spotShader("texture.vert", "phongSpotlight.frag");
 
@@ -677,6 +679,10 @@ int main(void)
         Model carModel("Models/carNew/LowPolyCars.obj");
         Car car(carShader, view, projection);
 
+
+        Model lightbulbModel("Models/lightbulb/lightbulbobj.obj");
+        Lightbulb lightbulb(lightbulbShader, view, projection);
+
         Monitor monitor(monitorShader, view, projection);
 
         spotShader.Bind();
@@ -731,7 +737,7 @@ int main(void)
 
         Cameras cameras(camerasShader, view, projection, room.getCornerCameras());
 
-        Renderable scene[] = { room, house, ramp, man, spots, car, monitor, cameras};
+        Renderable scene[] = { room, house, ramp, man, spots, car, monitor, cameras, lightbulb};
         
 
         //ALPHA
@@ -883,6 +889,7 @@ int main(void)
                     spotShader.SetUniform1i("uIsLight", 1);
                     carShader.SetUniform1i("uIsLight", 1);
                     manShader.SetUniform1i("uIsLight", 1);
+                    lightbulbShader.SetUniform1i("uIsLight", 1);
                     camerasShader.SetUniform1i("uIsLight", 1);
                 }
                 else {
@@ -892,6 +899,7 @@ int main(void)
                     spotShader.SetUniform1i("uIsLight", 0);
                     carShader.SetUniform1i("uIsLight", 0);
                     manShader.SetUniform1i("uIsLight", 0);
+                    lightbulbShader.SetUniform1i("uIsLight", 0);
                     camerasShader.SetUniform1i("uIsLight", 0);
                 }
             }
@@ -902,12 +910,15 @@ int main(void)
                 if (isLightbulbOn) {
                     houseShader.SetUniform1i("uIsLightbulbOn", 1);
                     manShader.SetUniform1i("uIsLightbulbOn", 1);
+                    lightbulbShader.SetUniform1i("uIsLightbulbOn", 1);
+                    
                    // rampShader.SetUniform1i("uIsLightbulbOn", 1);
                    // spotShader.SetUniform1i("uIsLightbulbOn", 1);
                 }
                 else {
                     houseShader.SetUniform1i("uIsLightbulbOn", 0);
                     manShader.SetUniform1i("uIsLightbulbOn", 0);
+                    lightbulbShader.SetUniform1i("uIsLightbulbOn", 0);
                    // rampShader.SetUniform1i("uIsLightbulbOn", 0);
                     //spotShader.SetUniform1i("uIsLightbulbOn", 0);
                 }
@@ -1034,7 +1045,7 @@ int main(void)
                 view = glm::lookAt(camera.position, camera.look, camera.up);
             }
 
-            for (int i = 0; i < 8; ++i) {
+            for (int i = 0; i < 9; ++i) {
                 scene[i].setView(view);
                 scene[i].setProjection(projection);
             }
@@ -1086,6 +1097,10 @@ int main(void)
             manShader.Bind();
             manShader.SetUniform4f("u_Color", 1.0f , 127.0f / 255, 80.0f / 255, 1.0f);
             manModel.Draw(manShader);
+
+            lightbulbShader.Bind();
+            lightbulbShader.SetUniform4f("u_Color", 1.0f, 1.0f, 80.0f / 255, 1.0f);
+            lightbulbModel.Draw(lightbulbShader);
 
             spotShader.SetUniform4f("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
             for (glm::mat4 model : spots.getModels()) {
