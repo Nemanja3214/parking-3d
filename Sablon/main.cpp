@@ -944,6 +944,12 @@ int main(void)
                 Camera camera = house.getHouseCamera();
                 view = glm::lookAt(camera.position, camera.look, camera.up);
 
+                spotShader.SetUniform3f("uViewPos", camera.position);
+                roomShader.SetUniform3f("uViewPos", camera.position);
+                rampShader.SetUniform3f("uViewPos", camera.position);
+                carShader.SetUniform3f("uViewPos", camera.position);
+                houseShader.SetUniform3f("uViewPos", camera.position);
+
             }
 
             if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
@@ -955,6 +961,12 @@ int main(void)
                 room.setCeiling(false);
                 view = glm::lookAt(camera.position, camera.look, camera.up);
 
+                spotShader.SetUniform3f("uViewPos", camera.position);
+                roomShader.SetUniform3f("uViewPos", camera.position);
+                rampShader.SetUniform3f("uViewPos", camera.position);
+                carShader.SetUniform3f("uViewPos", camera.position);
+                houseShader.SetUniform3f("uViewPos", camera.position);
+
             }
 
             if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS)
@@ -964,6 +976,12 @@ int main(void)
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[0];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
+
+                spotShader.SetUniform3f("uViewPos", camera.position);
+                roomShader.SetUniform3f("uViewPos", camera.position);
+                rampShader.SetUniform3f("uViewPos", camera.position);
+                carShader.SetUniform3f("uViewPos", camera.position);
+                houseShader.SetUniform3f("uViewPos", camera.position);
             }
 
             if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS)
@@ -973,6 +991,12 @@ int main(void)
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[1];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
+
+                spotShader.SetUniform3f("uViewPos", camera.position);
+                roomShader.SetUniform3f("uViewPos", camera.position);
+                rampShader.SetUniform3f("uViewPos", camera.position);
+                carShader.SetUniform3f("uViewPos", camera.position);
+                houseShader.SetUniform3f("uViewPos", camera.position);
             }
 
             if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
@@ -982,6 +1006,12 @@ int main(void)
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[2];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
+
+                spotShader.SetUniform3f("uViewPos", camera.position);
+                roomShader.SetUniform3f("uViewPos", camera.position);
+                rampShader.SetUniform3f("uViewPos", camera.position);
+                carShader.SetUniform3f("uViewPos", camera.position);
+                houseShader.SetUniform3f("uViewPos", camera.position);
             }
 
             if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
@@ -991,6 +1021,12 @@ int main(void)
                 room.setCeiling(true);
                 Camera camera = room.getCornerCameras()[3];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
+
+                spotShader.SetUniform3f("uViewPos", camera.position);
+                roomShader.SetUniform3f("uViewPos", camera.position);
+                rampShader.SetUniform3f("uViewPos", camera.position);
+                carShader.SetUniform3f("uViewPos", camera.position);
+                houseShader.SetUniform3f("uViewPos", camera.position);
             }
 
 
@@ -1008,8 +1044,7 @@ int main(void)
             room.setCameras(cameraIncrement);
             cameras.setCameras(cameraIncrement);
 
-           
-        
+
 
             carShader.Bind();
             carShader.SetUniform3f("uSpotlight1.pos", room.getCornerCameras()[3].position);
@@ -1017,7 +1052,6 @@ int main(void)
 
             carShader.SetUniform3f("uSpotlight2.pos", room.getCornerCameras()[1].position);
             carShader.SetUniform3f("uSpotlight2.lightDir", room.getCornerCameras()[1].look);
-
 
             rampShader.Bind();
             rampShader.SetUniform3f("uSpotlight1.pos", room.getCornerCameras()[3].position);
@@ -1043,11 +1077,19 @@ int main(void)
             if (room.currentCornerCameraIndex != -1) {
                 Camera camera = room.getCornerCameras()[room.currentCornerCameraIndex];
                 view = glm::lookAt(camera.position, camera.look, camera.up);
+
+                spotShader.SetUniform3f("uViewPos", camera.position);
+                roomShader.SetUniform3f("uViewPos", camera.position);
+                rampShader.SetUniform3f("uViewPos", camera.position);
+                carShader.SetUniform3f("uViewPos", camera.position);
+                houseShader.SetUniform3f("uViewPos", camera.position);
             }
 
             for (int i = 0; i < 9; ++i) {
                 scene[i].setView(view);
                 scene[i].setProjection(projection);
+
+    
             }
             //glDepthMask(GL_FALSE);
             roomShader.Bind();

@@ -71,13 +71,12 @@ vec3 resA = l.kA * uMaterial.kA;
 	resD  *= attenuation;
 	resS *= attenuation;
 
-    return vec3(resA + resD + resS);
+    return  (resA + resD) * vec3(u_Color) + resS;
 	}
 
 void main()
 {    
-	vec3 light = getLight(uSpotlight1) + getLight(uSpotlight2);
-	vec3 phong = light * vec3(u_Color);
+	vec3 phong = getLight(uSpotlight1) + getLight(uSpotlight2);
 	FragColor = uIsLight == 1 ? vec4(phong, u_Color[3]) : u_Color;
 }
 

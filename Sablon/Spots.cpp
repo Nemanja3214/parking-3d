@@ -15,7 +15,7 @@ Spots::Spots(Shader& shader, glm::mat4 view, glm::mat4 projection)
 
     shader.SetUniform3f("uSpotlight1.kA", glm::vec3(0.5f, 0.5f, 0.5f));
     shader.SetUniform3f("uSpotlight1.kD", glm::vec3(1.0f, 1.0f, 1.0f));
-    shader.SetUniform3f("uSpotlight1.kS", glm::vec3(0.1f, 0.1f, 0.1f));
+    shader.SetUniform3f("uSpotlight1.kS", glm::vec3(0.2f, 0.2f, 0.2f));
 
     // spotlight 2
     shader.SetUniform1f("uSpotlight2.constant", 2.1f);
@@ -24,12 +24,12 @@ Spots::Spots(Shader& shader, glm::mat4 view, glm::mat4 projection)
 
     shader.SetUniform3f("uSpotlight2.kA", glm::vec3(0.5f, 0.5f, 0.5f));
     shader.SetUniform3f("uSpotlight2.kD", glm::vec3(1.0f, 1.0f, 1.0f));
-    shader.SetUniform3f("uSpotlight2.kS", glm::vec3(0.1f, 0.1f, 0.1f));
+    shader.SetUniform3f("uSpotlight2.kS", glm::vec3(0.2f, 0.2f, 0.2f));
 
-    shader.SetUniform1f("uMaterial.shine", 52);
+    shader.SetUniform1f("uMaterial.shine", 32);
     shader.SetUniform3f("uMaterial.kA", glm::vec3(0.5f, 0.5f, 0.5f));
     shader.SetUniform3f("uMaterial.kD", glm::vec3(0.5f, 0.5f, 0.5f));
-    shader.SetUniform3f("uMaterial.kS", glm::vec3(0.8f, 0.8f, 0.8f));
+    shader.SetUniform3f("uMaterial.kS", glm::vec3(0.2f, 0.9f, 0.2f));
 
     this->model = glm::mat4(1.0f);
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
