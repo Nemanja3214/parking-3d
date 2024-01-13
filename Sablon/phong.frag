@@ -54,7 +54,7 @@ vec3 getLight(Light l){
 	resD  *= attenuation;
 	resS *= attenuation;
 
-	return (resA + resD) * vec3(u_Color) + resS;
+	return (resA + resD + resS) * vec3(u_Color);
 	}
 
 void main()

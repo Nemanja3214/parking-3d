@@ -86,7 +86,7 @@ int main(void)
     Shader houseShader("texture.vert", "phong.frag");
     Shader monitorShader("texture.vert", "phong.frag");
     Shader rampShader("texture.vert", "phongSpotlight.frag");
-    Shader manShader("model.vert", "model.frag");
+    Shader manShader("model.vert", "phong.frag");
     Shader carShader("model.vert", "phongSpotlight.frag");
     Shader spotShader("texture.vert", "phongSpotlight.frag");
 
@@ -857,6 +857,7 @@ int main(void)
                     roomShader.SetUniform1i("uIsLight", 1);
                     spotShader.SetUniform1i("uIsLight", 1);
                     carShader.SetUniform1i("uIsLight", 1);
+                    manShader.SetUniform1i("uIsLight", 1);
                 }
                 else {
                     houseShader.SetUniform1i("uIsLight", 0);
@@ -864,6 +865,7 @@ int main(void)
                     roomShader.SetUniform1i("uIsLight", 0);
                     spotShader.SetUniform1i("uIsLight", 0);
                     carShader.SetUniform1i("uIsLight", 0);
+                    manShader.SetUniform1i("uIsLight", 0);
                 }
             }
 
@@ -872,11 +874,13 @@ int main(void)
                 isLightbulbOn = !isLightbulbOn;
                 if (isLightbulbOn) {
                     houseShader.SetUniform1i("uIsLightbulbOn", 1);
+                    manShader.SetUniform1i("uIsLightbulbOn", 1);
                    // rampShader.SetUniform1i("uIsLightbulbOn", 1);
                    // spotShader.SetUniform1i("uIsLightbulbOn", 1);
                 }
                 else {
                     houseShader.SetUniform1i("uIsLightbulbOn", 0);
+                    manShader.SetUniform1i("uIsLightbulbOn", 0);
                    // rampShader.SetUniform1i("uIsLightbulbOn", 0);
                     //spotShader.SetUniform1i("uIsLightbulbOn", 0);
                 }
@@ -1049,6 +1053,8 @@ int main(void)
             renderer.Draw(rampVa, moveableRampIndicesIb, rampShader);
             ramp.setModel(unmovebleModel);
 
+            manShader.Bind();
+            manShader.SetUniform4f("u_Color", 1.0f , 127.0f / 255, 80.0f / 255, 1.0f);
             manModel.Draw(manShader);
 
             spotShader.SetUniform4f("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
