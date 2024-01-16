@@ -54,7 +54,9 @@ glm::mat4 Ramp::rotate() {
     //modelV = glm::scale(modelV, glm::vec3(0.85f, 0.45f, 0.15f));
     //glm::vec3 negatedRampCenter = -rampCenter;
     //glm::mat4 modelV = glm::translate(model, negatedRampCenter);
-    glm::mat4 modelV = glm::rotate(model, glm::radians(rampAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 modelV = glm::scale(model, glm::vec3(1/0.85f, 1/0.45f, 1/0.15f));
+    modelV = glm::rotate(modelV, glm::radians(rampAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+    modelV = glm::scale(modelV, glm::vec3(0.85f, 0.45f, 0.15f));
     //modelV = glm::translate(modelV, rampCenter);
     return modelV;
     //shader.SetUniformMat4f("uM", model);
